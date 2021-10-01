@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from bokeh.models import CustomJS
+import asyncio
 
 from lsst.ts.bokeh.apps.base_interaction import BaseInteraction
 from lsst.ts.bokeh.apps.auxtel.torques.layout import Layout
@@ -32,8 +32,8 @@ class Interaction(BaseInteraction):
     def handle_text_input(self, attr, old, new):
         self.layout.data_aggregator.day_obs = int(new[:8])
         self.layout.data_aggregator.seq_num = int(new[8:])
-        
-        self.layout.data_aggregator.retrieve_data()
+
+        asyncio.run(self.layout.data_aggregator.retrieve_data())
 
     def setup_interaction(self):
 
