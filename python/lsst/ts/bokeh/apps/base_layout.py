@@ -23,15 +23,22 @@ __all__ = ["BaseLayout"]
 
 import abc
 
+from bokeh.plotting import curdoc
 
-class BaseLayout(metaclass=abs.ABCMeta):
+
+class BaseLayout(metaclass=abc.ABCMeta):
     """Base layout class for building bokeh apps."""
 
     def __init__(self, data_aggregator) -> None:
-        
+
         self.data_aggregator = data_aggregator
+        self.doc = curdoc()
 
     @abc.abstractmethod
-    def get_layout(self):
+    def get_page(self):
         """Method to initialize data sources."""
         raise NotImplementedError()
+
+    def show(self):
+        self.data_aggregator.initialize_data_sources()
+        self.doc.add_root(self.get_page())

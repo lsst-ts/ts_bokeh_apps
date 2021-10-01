@@ -24,7 +24,7 @@ __all__ = ["BaseDataAggregator"]
 import abc
 
 
-class BaseDataAggregator(metaclass=abs.ABCMeta):
+class BaseDataAggregator(metaclass=abc.ABCMeta):
     """Base data aggregator class for building bokeh apps.
 
     Attributes
@@ -36,7 +36,7 @@ class BaseDataAggregator(metaclass=abs.ABCMeta):
     def __init__(self) -> None:
 
         self.data_sources = dict()
-    
+
     @abc.abstractmethod
     def initialize_data_sources(self, *args, **kwargs):
         """Method to initialize data sources."""

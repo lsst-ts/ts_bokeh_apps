@@ -23,11 +23,22 @@ __all__ = ["BaseInteraction"]
 
 import abc
 
-from .base_layout import BaseLayout
 
-
-class BaseInteraction(BaseLayout, metaclass=abs.ABCMeta):
+class BaseInteraction(metaclass=abc.ABCMeta):
     """Base layout class for building bokeh apps."""
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, layout) -> None:
+
+        self.layout = layout
+
+        self.layout.data_aggregator.initialize_data_sources()
+
+        self.page = self.layout.get_page()
+
+        self.setup_interaction()
+
+        self.layout.doc.add_root(self.page)
+
+    @abc.abstractmethod
+    def setup_interaction(self):
+        raise NotImplementedError()
