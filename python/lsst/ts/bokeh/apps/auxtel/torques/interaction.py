@@ -33,7 +33,10 @@ class Interaction(BaseInteraction):
         self.layout.data_aggregator.day_obs = int(new[:8])
         self.layout.data_aggregator.seq_num = int(new[8:])
 
-        asyncio.run(self.layout.data_aggregator.retrieve_data())
+        try:
+            asyncio.run(self.layout.data_aggregator.retrieve_data())
+        except Exception:
+            print(f"Error retrieving data for {new}...")
 
     def setup_interaction(self):
 
