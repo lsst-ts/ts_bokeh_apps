@@ -21,12 +21,12 @@
 
 import numpy
 
-from bokeh.models import Span, Div
+from bokeh.models import Span, Div, TextInput
 from bokeh.plotting import figure
 from bokeh.layouts import column, gridplot
 
-from ..base_layout import BaseLayout
-from .data_aggregator import DataAggregator
+from lsst.ts.bokeh.apps.base_layout import BaseLayout
+from lsst.ts.bokeh.apps.auxtel.torques.data_aggregator import DataAggregator
 
 
 class Layout(BaseLayout):
@@ -35,7 +35,7 @@ class Layout(BaseLayout):
     def __init__(self) -> None:
         super().__init__(DataAggregator())
 
-    def get_layout(self):
+    def get_page(self):
         mount_start = self.data_aggregator.data_sources["column_data_source"].data[
             "mount_x"
         ][0]
@@ -46,38 +46,38 @@ class Layout(BaseLayout):
             "rotator_x"
         ][0]
 
-        s1 = self.make_plot(
+        s1 = self._make_plot(
             "Azimuth axis",
             "x1",
             "y1",
             lcolors="red",
             start=mount_start,
         )
-        s2 = self.make_plot(
+        s2 = self._make_plot(
             "Elevation axis", "x2", "y2", lcolors="green", start=mount_start
         )
-        s3 = self.make_plot(
+        s3 = self._make_plot(
             "Nasmyth2 axis", "x3", "y3", lcolors="blue", start=mount_start
         )
-        s4 = self.make_plot(
+        s4 = self._make_plot(
             f"Azimuth RMS error",
             "x4",
             "y4",
             lcolors="red",
         )
-        s5 = self.make_plot(
+        s5 = self._make_plot(
             f"Elevation RMS error",
             "x5",
             "y5",
             lcolors="green",
         )
-        s6 = self.make_plot(
+        s6 = self._make_plot(
             f"Nasmyth RMS error",
             "x6",
             "y6",
             lcolors="blue",
         )
-        s7 = self.make_plot(
+        s7 = self._make_plot(
             "",
             ["x7", "x7"],
             ["y7a", "y7b"],
@@ -85,7 +85,7 @@ class Layout(BaseLayout):
             legend=["azimuthMotor1Torque", "azimuthMotor2Torque"],
             start=torque_start,
         )
-        s8 = self.make_plot(
+        s8 = self._make_plot(
             "",
             "x8",
             "y8",
@@ -93,7 +93,7 @@ class Layout(BaseLayout):
             legend="elevationMotorTorque",
             start=torque_start,
         )
-        s9 = self.make_plot(
+        s9 = self._make_plot(
             "",
             "x9",
             "y9",
@@ -129,7 +129,14 @@ class Layout(BaseLayout):
             align="center",
         )
 
-        return column(title, grid)
+        text_input = TextInput(
+            value="2021081700541",
+            title="Type exposure id and press enter:",
+            max_length=15,
+            sizing_mode="fixed",
+        )
+
+        return column(text_input, grid)
 
     def _make_plot(self, title, xnames, ynames, lcolors=None, legend=None, start=None):
         if type(xnames) is str and type(ynames) is str:
