@@ -48,6 +48,8 @@ class DataAggregator(BaseDataAggregator):
     def initialize_data_sources(self, *args, **kwargs):
         """Initialize data sources."""
 
+        self.create_data_sources()
+
         self.data_sources["column_data_source"] = ColumnDataSource(
             data=dict(
                 mount_x=[0.0],
