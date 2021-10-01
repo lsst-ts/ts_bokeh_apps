@@ -130,8 +130,8 @@ class Layout(BaseLayout):
         )
 
         text_input = TextInput(
-            value="2021081700541",
-            title="Type exposure id and press enter:",
+            value="",
+            title="Type exposure id and press enter (e.g. 2021081700541):",
             max_length=15,
             sizing_mode="fixed",
         )
