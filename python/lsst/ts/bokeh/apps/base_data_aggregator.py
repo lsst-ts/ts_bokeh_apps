@@ -22,6 +22,7 @@
 __all__ = ["BaseDataAggregator"]
 
 import abc
+import logging
 
 
 class BaseDataAggregator(metaclass=abc.ABCMeta):
@@ -34,10 +35,15 @@ class BaseDataAggregator(metaclass=abc.ABCMeta):
     """
 
     def __init__(self) -> None:
-
+        self.log = logging.getLogger(__name__)
         self.data_sources = dict()
 
     @abc.abstractmethod
     def initialize_data_sources(self, *args, **kwargs):
         """Method to initialize data sources."""
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def retrieve_data(self, *args, **kwargs):
+        """Retrieve data and set up the data sources streams."""
         raise NotImplementedError()

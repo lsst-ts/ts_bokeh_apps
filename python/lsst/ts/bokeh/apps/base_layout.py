@@ -22,8 +22,7 @@
 __all__ = ["BaseLayout"]
 
 import abc
-
-from bokeh.plotting import curdoc
+import logging
 
 
 class BaseLayout(metaclass=abc.ABCMeta):
@@ -31,14 +30,12 @@ class BaseLayout(metaclass=abc.ABCMeta):
 
     def __init__(self, data_aggregator) -> None:
 
+        self.log = logging.getLogger(__name__)
+
         self.data_aggregator = data_aggregator
-        self.doc = curdoc()
+        self.data_aggregator.initialize_data_sources()
 
     @abc.abstractmethod
     def get_page(self):
         """Method to initialize data sources."""
         raise NotImplementedError()
-
-    def show(self):
-        self.data_aggregator.initialize_data_sources()
-        self.doc.add_root(self.get_page())

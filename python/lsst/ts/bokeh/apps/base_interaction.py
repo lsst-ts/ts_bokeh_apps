@@ -22,6 +22,9 @@
 __all__ = ["BaseInteraction"]
 
 import abc
+import logging
+
+from bokeh.plotting import curdoc
 
 
 class BaseInteraction(metaclass=abc.ABCMeta):
@@ -29,15 +32,17 @@ class BaseInteraction(metaclass=abc.ABCMeta):
 
     def __init__(self, layout) -> None:
 
-        self.layout = layout
+        self.log = logging.getLogger(__name__)
 
-        self.layout.data_aggregator.initialize_data_sources()
+        self.layout = layout
 
         self.page = self.layout.get_page()
 
+        self.doc = curdoc()
+
         self.setup_interaction()
 
-        self.layout.doc.add_root(self.page)
+        self.doc.add_root(self.page)
 
     @abc.abstractmethod
     def setup_interaction(self):
