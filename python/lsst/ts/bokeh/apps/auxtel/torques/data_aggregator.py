@@ -37,8 +37,8 @@ class DataAggregator(BaseDataAggregator):
     def __init__(self) -> None:
         super().__init__()
 
-        self.day_obs = None
-        self.seq_num = None
+        self.day_obs = 20210817
+        self.seq_num = 541
 
     def create_data_sources(self):
         self.butler = dafButler.Butler(
