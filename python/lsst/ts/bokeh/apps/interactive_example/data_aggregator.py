@@ -20,6 +20,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy
+import asyncio
 
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import RdYlBu3
@@ -47,8 +48,12 @@ class DataAggregator(BaseDataAggregator):
             )
         )
 
-    def retrieve_data(self, *args, **kwargs):
-        """"""
+    async def _retrieve_data_async(self):
+        """Testing async methods in apps."""
+
+        self.log.info("Waiting 1s before generating data...")
+        await asyncio.sleep(1.0)
+
         new_data = dict()
         new_data["x"] = self.data_sources["column_data_source"].data["x"] + [
             numpy.random.random() * 70 + 15
@@ -65,3 +70,9 @@ class DataAggregator(BaseDataAggregator):
         self.data_sources["column_data_source"].data = new_data
 
         self.iterator += 1
+
+        self.log.info("Data generated...")
+
+    def retrieve_data(self, *args, **kwargs):
+        """Retrive data."""
+        asyncio.run(self._retrieve_data_async())

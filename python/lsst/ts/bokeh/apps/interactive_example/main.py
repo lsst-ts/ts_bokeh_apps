@@ -19,6 +19,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import sys
+import logging
+
 from lsst.ts.bokeh.apps.interactive_example.interaction import Interaction
 
 Interaction()
+
+logging.basicConfig(format="%(name)s:%(message)s", level=logging.DEBUG)
+
+[
+    logging.getLogger(name).setLevel(logging.DEBUG)
+    for name in logging.root.manager.loggerDict
+]

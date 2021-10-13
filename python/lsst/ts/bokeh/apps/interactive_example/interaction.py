@@ -28,6 +28,7 @@ from lsst.ts.bokeh.apps.interactive_example.layout import Layout
 class Interaction(BaseInteraction):
     def __init__(self) -> None:
         super().__init__(Layout())
+        self.log.debug("Starting Iteraction...")
 
     def setup_interaction(self):
 
