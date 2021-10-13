@@ -20,7 +20,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy
-import asyncio
 
 import lsst.daf.butler as dafButler
 

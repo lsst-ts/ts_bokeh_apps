@@ -19,7 +19,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from bokeh.models import LogColorMapper, ColorBar, TextInput, PreText
+from bokeh.models import (
+    LogColorMapper,
+    ColorBar,
+    TextInput,
+    PreText,
+    Dropdown,
+    RangeSlider,
+    CustomJS,
+)
 from bokeh.plotting import figure
 from bokeh.layouts import column, row
 
@@ -33,7 +41,13 @@ class Layout(BaseLayout):
     def __init__(self) -> None:
         super().__init__(DataAggregator())
 
+    def _get_color_mapper(self, palette):
+        return LogColorMapper(palette=palette, low=self.image_low, high=self.image_high)
+
     def get_page(self):
+
+        self.image_low = 11000
+        self.image_high = 21000
 
         p = figure(
             plot_width=1200,
@@ -42,9 +56,9 @@ class Layout(BaseLayout):
             y_range=(0, 1),
             tooltips=[("x", "$x"), ("y", "$y"), ("value", "@image")],
         )
-        color_mapper = LogColorMapper(palette="Viridis256", low=11000, high=21000)
+        color_mapper = self._get_color_mapper("Viridis256")
 
-        p.image(
+        self.image = p.image(
             image="image",
             source=self.data_aggregator.data_sources["column_data_source"],
             color_mapper=color_mapper,
@@ -69,4 +83,32 @@ class Layout(BaseLayout):
 
         status_text = PreText(text="", width=500, height=50, sizing_mode="fixed")
 
-        return column(row(text_input, status_text), p)
+        menu = [
+            ("Viridis256", "Viridis256"),
+            ("Greys", "Greys9"),
+            ("Oranges", "Oranges9"),
+        ]
+
+        dropdown = Dropdown(label="Color Map", button_type="success", menu=menu)
+
+        dropdown.js_on_event(
+            "menu_item_click",
+            CustomJS(code="console.log('dropdown: ' + this.item, this.toString())"),
+        )
+
+        range_slider = RangeSlider(
+            start=self.image_low,
+            end=self.image_high,
+            value=(self.image_low, self.image_high),
+            step=1000,
+            title="Image Scale",
+        )
+        range_slider.js_on_change(
+            "value",
+            CustomJS(
+                code="""
+            console.log('range_slider: value=' + this.value, this.toString())
+        """
+            ),
+        )
+        return column(row(text_input, status_text, dropdown), p, range_slider)

@@ -44,4 +44,11 @@ class Interaction(BaseInteraction):
     def setup_interaction(self):
 
         text_input = self.page.children[0].children[0]
+        dropdown = self.page.children[0].children[2]
+
         text_input.on_change("value", self.handle_text_input)
+        dropdown.on_click(self.drop_down_callback)
+
+    def drop_down_callback(self, event):
+        self.log.debug(f"Changing collor pallet {event.item}.")
+        self.layout.image.glyph.color_mapper = self.layout._get_color_mapper(palette=event.item)
