@@ -34,6 +34,10 @@ class BaseLayout(metaclass=abc.ABCMeta):
 
         self.data_aggregator = data_aggregator
         self.data_aggregator.initialize_data_sources()
+        try:
+            self.data_aggregator.retrieve_data()
+        except Exception:
+            self.log.exception("Failed to retrieve initial dataset.")
 
     @abc.abstractmethod
     def get_page(self):
