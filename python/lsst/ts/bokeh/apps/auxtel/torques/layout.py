@@ -61,7 +61,11 @@ class Layout(BaseLayout):
             start=mount_start,
         )
         s3 = self._make_plot(
-            "Nasmyth2 axis", "mount_x", "mount_nasmyth2_calculated_angle", lcolors="blue", start=mount_start
+            "Nasmyth2 axis",
+            "mount_x",
+            "mount_nasmyth2_calculated_angle",
+            lcolors="blue",
+            start=mount_start,
         )
         s4 = self._make_plot(
             f"Azimuth RMS error",
