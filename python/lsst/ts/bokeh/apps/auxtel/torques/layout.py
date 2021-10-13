@@ -48,55 +48,59 @@ class Layout(BaseLayout):
 
         s1 = self._make_plot(
             "Azimuth axis",
-            "x1",
-            "y1",
+            "mount_x",
+            "mount_azimuth_calculate_angle",
             lcolors="red",
             start=mount_start,
         )
         s2 = self._make_plot(
-            "Elevation axis", "x2", "y2", lcolors="green", start=mount_start
+            "Elevation axis",
+            "mount_x",
+            "mount_elevation_calculated_angle",
+            lcolors="green",
+            start=mount_start,
         )
         s3 = self._make_plot(
-            "Nasmyth2 axis", "x3", "y3", lcolors="blue", start=mount_start
+            "Nasmyth2 axis", "mount_x", "mount_nasmyth2_calculated_angle", lcolors="blue", start=mount_start
         )
         s4 = self._make_plot(
             f"Azimuth RMS error",
-            "x4",
-            "y4",
+            "mount_x",
+            "mount_az_err",
             lcolors="red",
         )
         s5 = self._make_plot(
             f"Elevation RMS error",
-            "x5",
-            "y5",
+            "mount_x",
+            "mount_el_err",
             lcolors="green",
         )
         s6 = self._make_plot(
             f"Nasmyth RMS error",
-            "x6",
-            "y6",
+            "rotator_x",
+            "rotator_error",
             lcolors="blue",
         )
         s7 = self._make_plot(
             "",
-            ["x7", "x7"],
-            ["y7a", "y7b"],
+            ["torque_x", "torque_x"],
+            ["torques_azimuth_motor1_torque", "torques_azimuth_motor2_torque"],
             lcolors=["blue", "green"],
             legend=["azimuthMotor1Torque", "azimuthMotor2Torque"],
             start=torque_start,
         )
         s8 = self._make_plot(
             "",
-            "x8",
-            "y8",
+            "torque_x",
+            "torques_elevation_motor_torque",
             lcolors="blue",
             legend="elevationMotorTorque",
             start=torque_start,
         )
         s9 = self._make_plot(
             "",
-            "x9",
-            "y9",
+            "torque_x",
+            "torques_nasmyth2_motor_torque",
             lcolors="blue",
             legend="nasmyth2MotorTorque",
             start=torque_start,

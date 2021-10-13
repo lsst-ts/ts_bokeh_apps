@@ -20,6 +20,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy
+import asyncio
 
 import lsst.daf.butler as dafButler
 
@@ -71,7 +72,10 @@ class DataAggregator(BaseDataAggregator):
             )
         )
 
-    async def retrieve_data(self, *args, **kwargs):
+    def retrieve_data(self, *args, **kwargs):
+        asyncio.run(self._retrieve_data_async())
+
+    async def _retrieve_data_async(self):
         """"""
 
         t = [
@@ -129,4 +133,21 @@ class DataAggregator(BaseDataAggregator):
         ) * 3600
         rot["rot_err"] = (rot["nasmyth2CalculatedAngle"] - rot["rmodel"]) * 3600
 
-        return (mountpos, rot, torques, md.toDict())
+        self.data_sources["column_data_source"].data = dict(
+            mount_x=mountpos.index,
+            mount_azimuth_calculate_angle=mountpos["azimuthCalculatedAngle"],
+            mount_elevation_calculated_angle=mountpos["elevationCalculatedAngle"],
+            mount_azimuth_fit=mountpos["amodel"],
+            mount_elevation_fit=mountpos["emodel"],
+            mount_nasmyth2_calculated_angle=rot["rmodel"],
+            mount_az_err=mountpos["az_err"],
+            mount_el_err=mountpos["el_err"],
+            torque_x=torques.index,
+            torques_azimuth_motor1_torque=torques["azimuthMotor1Torque"],
+            torques_azimuth_motor2_torque=torques["azimuthMotor2Torque"],
+            torques_elevation_motor_torque=torques["elevationMotorTorque"],
+            torques_nasmyth2_motor_torque=torques["nasmyth2MotorTorque"],
+            rotator_x=rot.index,
+            rotator_error=rot["rot_err"],
+            rotator_fit=rot["rmodel"],
+        )

@@ -34,10 +34,10 @@ class Interaction(BaseInteraction):
         self.layout.data_aggregator.seq_num = int(new[8:])
 
         try:
-            print(f"Processing: {new}")
-            asyncio.run(self.layout.data_aggregator.retrieve_data())
+            self.log.debug(f"Processing: {new}.")
+            self.layout.data_aggregator.retrieve_data()
         except Exception:
-            print(f"Error retrieving data for {new}...")
+            self.log.exception(f"Error retrieving data for {new}.")
 
     def setup_interaction(self):
 
