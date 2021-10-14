@@ -58,7 +58,15 @@ class DataAggregator(BaseDataAggregator):
         self.create_data_sources()
 
         self.data_sources["column_data_source"] = ColumnDataSource(
-            data=dict(image=[numpy.zeros((4, 4))], dh=[1.0], dw=[1.0], x=[0], y=[0])
+            data=dict(
+                image=[numpy.zeros((4, 4))],
+                dh=[1.0],
+                dw=[1.0],
+                x=[0],
+                y=[0],
+                image_low=[0],
+                image_high=[0],
+            )
         )
 
     def retrieve_data(self, *args, **kwargs):
@@ -74,4 +82,10 @@ class DataAggregator(BaseDataAggregator):
 
         self.data_sources["column_data_source"].data["image"] = [
             best_effor_exp.getImage().getArray()[::10, ::10]
+        ]
+        self.data_sources["column_data_source"].data["image_low"] = [
+            numpy.min(best_effor_exp.getImage().getArray()[::10, ::10])
+        ]
+        self.data_sources["column_data_source"].data["image_high"] = [
+            numpy.max(best_effor_exp.getImage().getArray()[::10, ::10])
         ]

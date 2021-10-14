@@ -35,6 +35,7 @@ class Interaction(BaseInteraction):
             self.log.debug(f"Processing: {new}.")
             self.page.children[0].children[1].text = f"Processing: {new}."
             self.layout.data_aggregator.retrieve_data()
+
         except Exception:
             self.log.exception(f"Error retrieving data for {new}.")
             self.page.children[0].children[1].text = f"Error retrieving data for {new}."

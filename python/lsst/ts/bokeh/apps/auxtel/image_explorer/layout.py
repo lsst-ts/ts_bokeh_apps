@@ -41,12 +41,16 @@ class Layout(BaseLayout):
     def __init__(self) -> None:
         super().__init__(DataAggregator())
 
-    def _get_color_mapper(self, palette):
-        return LogColorMapper(palette=palette, low=self.image_low, high=self.image_high)
+    def _get_color_mapper(self, palette="Viridis256"):
+        return LogColorMapper(
+            palette=palette,
+            low=self.image_low,
+            high=self.image_high,
+        )
 
     def get_page(self):
 
-        self.image_low = 11000
+        self.image_low = 1000
         self.image_high = 21000
 
         p = figure(
