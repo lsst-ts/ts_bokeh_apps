@@ -19,9 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# import numpy
-
-from bokeh.models import Span, Div
 from bokeh.plotting import figure
 from bokeh.layouts import column, row
 from bokeh.models import Button, CustomJS, Dropdown
