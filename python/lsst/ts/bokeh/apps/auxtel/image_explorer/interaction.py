@@ -51,4 +51,6 @@ class Interaction(BaseInteraction):
 
     def drop_down_callback(self, event):
         self.log.debug(f"Changing collor pallet {event.item}.")
-        self.layout.image.glyph.color_mapper = self.layout._get_color_mapper(palette=event.item)
+        self.layout.image.glyph.color_mapper = self.layout._get_color_mapper(
+            palette=event.item
+        )

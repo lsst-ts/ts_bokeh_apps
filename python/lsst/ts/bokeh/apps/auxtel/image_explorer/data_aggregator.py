@@ -27,6 +27,9 @@ from lsst_efd_client import EfdClient
 
 from bokeh.models import ColumnDataSource
 
+from lsst.rapid.analysis import BestEffortIsr
+from lsst.pipe.tasks.quickFrameMeasurement import QuickFrameMeasurementTask
+
 from lsst.ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
 
 
@@ -45,6 +48,9 @@ class DataAggregator(BaseDataAggregator):
             "/repo/LATISS", instrument="LATISS", collections="LATISS/raw/all"
         )
         self.efd = EfdClient("summit_efd")
+        qm_config = QuickFrameMeasurementTask.ConfigClass()
+        self.qm = QuickFrameMeasurementTask(config=qm_config)
+        self.best_effort_isr = BestEffortIsr(butler=self.butler, repodirIsGen3=True)
 
     def initialize_data_sources(self, *args, **kwargs):
         """Initialize data sources."""
@@ -59,13 +65,13 @@ class DataAggregator(BaseDataAggregator):
 
         exposure_id = f"{self.day_obs}{self.seq_num:05d}"
         if exposure_id in self.data_cache:
-            calexp = self.data_cache[exposure_id]
+            best_effor_exp = self.data_cache[exposure_id]
         else:
-            calexp = self.butler.get(
-                "raw", day_obs=self.day_obs, seq_num=self.seq_num, detector=0
+            best_effor_exp = self.best_effort_isr.getExposure(
+                dict(day_obs=self.day_obs, seq_num=self.seq_num, detector=0)
             )
-            self.data_cache[exposure_id] = calexp
+            self.data_cache[exposure_id] = best_effor_exp
 
         self.data_sources["column_data_source"].data["image"] = [
-            calexp.getImage().getArray()[::10, ::10]
+            best_effor_exp.getImage().getArray()[::10, ::10]
         ]
