@@ -19,9 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import numpy
-
-from bokeh.models import Span, Div, TextInput
+from bokeh.models import Span, TextInput
 from bokeh.plotting import figure
 from bokeh.layouts import column, gridplot
 
@@ -41,9 +39,6 @@ class Layout(BaseLayout):
         ][0]
         torque_start = self.data_aggregator.data_sources["column_data_source"].data[
             "torque_x"
-        ][0]
-        rotator_start = self.data_aggregator.data_sources["column_data_source"].data[
-            "rotator_x"
         ][0]
 
         s1 = self._make_plot(
@@ -68,19 +63,19 @@ class Layout(BaseLayout):
             start=mount_start,
         )
         s4 = self._make_plot(
-            f"Azimuth RMS error",
+            "Azimuth RMS error",
             "mount_x",
             "mount_az_err",
             lcolors="red",
         )
         s5 = self._make_plot(
-            f"Elevation RMS error",
+            "Elevation RMS error",
             "mount_x",
             "mount_el_err",
             lcolors="green",
         )
         s6 = self._make_plot(
-            f"Nasmyth RMS error",
+            "Nasmyth RMS error",
             "rotator_x",
             "rotator_error",
             lcolors="blue",
@@ -131,12 +126,6 @@ class Layout(BaseLayout):
 
         grid = gridplot([[s1, s2, s3], [s4, s5, s6], [s7, s8, s9]])
 
-        title = Div(
-            text=f"<h1>Mount Tracking: "
-            f"Azimuth = {'Placeholder Az'}, Elevation = {'Placeholder El'}</h1>",
-            align="center",
-        )
-
         text_input = TextInput(
             value="",
             title="Type exposure id and press enter (e.g. 2021081700541):",
@@ -175,7 +164,7 @@ class Layout(BaseLayout):
         for i, t in enumerate(zip(xnames, ynames, lcolors)):
             x, y, c = t
             if legend:
-                line = plot.line(
+                plot.line(
                     x=x,
                     y=y,
                     line_color=c,
@@ -184,7 +173,7 @@ class Layout(BaseLayout):
                     legend_label=legend[i],
                 )
             else:
-                line = plot.line(
+                plot.line(
                     x=x,
                     y=y,
                     line_color=c,
