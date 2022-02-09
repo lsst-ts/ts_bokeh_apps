@@ -5,7 +5,7 @@ from bokeh.models.widgets.tables import NumberFormatter
 
 import lsst.daf.butler as dafButler
 
-from helper import (
+from .helpers import (
     add_message,
     get_messages,
     edit_message,
