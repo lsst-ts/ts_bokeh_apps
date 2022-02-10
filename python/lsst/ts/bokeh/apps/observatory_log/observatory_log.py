@@ -29,6 +29,7 @@ class ObservatoryLog:
         self.tabulator = pn.widgets.Tabulator(
             self.df, layout="fit_data_fill", height=450, formatters=tabulator_formatters
         )
+        self.tabulator.disabled = True
         self.tabulator.hidden_columns = [
             "id",
             "is_human",
@@ -67,10 +68,17 @@ class ObservatoryLog:
                 max_width=100,
                 width_policy="fixed",
             ),
+            pn.widgets.Button(
+                name="deselect",
+                width=50,
+                max_width=100,
+                width_policy="fixed",
+            ),
         )
         self.exposure_flag_buttons[1].on_click(self.set_exposure_flag_none)
         self.exposure_flag_buttons[2].on_click(self.set_exposure_flag_questionable)
         self.exposure_flag_buttons[3].on_click(self.set_exposure_flag_junk)
+        self.exposure_flag_buttons[4].on_click(self.deselect)
 
         self.remove_log_entry_button = pn.widgets.Button(
             name="Remove", width=50, max_width=100, width_policy="fixed"
@@ -95,6 +103,9 @@ class ObservatoryLog:
     def set_exposure_flag_junk(self, event):
         self._handle_all_selected_have_log_entry()
         self._set_exposure_flag("junk")
+        self.reset_selection()
+
+    def deselect(self, event):
         self.reset_selection()
 
     def _handle_all_selected_have_log_entry(self):
@@ -174,6 +185,7 @@ class ObservatoryLog:
         self.exposure_flag_buttons[1].disabled = True
         self.exposure_flag_buttons[2].disabled = True
         self.exposure_flag_buttons[3].disabled = True
+        self.exposure_flag_buttons[4].disabled = True
         self.remove_log_entry_button.disabled = True
         self.text_table.disabled = True
 
@@ -181,6 +193,7 @@ class ObservatoryLog:
         self.exposure_flag_buttons[1].disabled = False
         self.exposure_flag_buttons[2].disabled = False
         self.exposure_flag_buttons[3].disabled = False
+        self.exposure_flag_buttons[4].disabled = False
         self.remove_log_entry_button.disabled = False
         self.text_table.disabled = False
 
@@ -320,8 +333,7 @@ class ObservatoryLog:
     def component(self):
 
         return pn.Column(
-            pn.Row(*self.exposure_flag_buttons),
+            pn.Row(*self.exposure_flag_buttons, self.remove_log_entry_button),
             self.tabulator,
             self.text_table,
-            self.remove_log_entry_button,
         )
