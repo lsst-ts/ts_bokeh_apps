@@ -37,6 +37,8 @@ class ObservatoryLog:
             "user_agent",
         ]
 
+        self.follow = pn.widgets.Checkbox(name="Follow", value=True, align="end")
+
         self.cb = pn.state.add_periodic_callback(self.stream, 10000)
         self.text_table = pn.widgets.TextInput(
             name="Log:", placeholder="Enter a string here..."
