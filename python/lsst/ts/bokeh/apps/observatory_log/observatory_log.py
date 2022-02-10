@@ -87,39 +87,41 @@ class ObservatoryLog:
         self.text_table.param.watch(self.handle_log, "value")
 
     def set_exposure_flag_none(self, event):
-        self._handle_all_selected_have_log_entry()
         self._set_exposure_flag("none")
         self.reset_selection()
 
     def set_exposure_flag_questionable(self, event):
-        self._handle_all_selected_have_log_entry()
         self._set_exposure_flag("questionable")
         self.reset_selection()
 
     def set_exposure_flag_junk(self, event):
-        self._handle_all_selected_have_log_entry()
         self._set_exposure_flag("junk")
         self.reset_selection()
 
     def deselect(self, event):
         self.reset_selection()
 
-    def _handle_all_selected_have_log_entry(self):
-
-        for index in self.tabulator.selection:
-            if self._is_new(index):
-                self._add_new_log_entry(index=index, message="")
-
     def _set_exposure_flag(self, flag):
         for index in self.tabulator.selection:
-            message_id = self.tabulator.value["id"][index]
+
+            exposure_id = self.tabulator.value["exposure"][index]
+            latest_valid_message = MessageSearcher(
+                obs_id=exposure_id, order_by=["date_added"]
+            ).search()[-1:]
+
             try:
-                message = edit_message(message_id, exposure_flag=flag)
-                self.tabulator.patch(
-                    {
-                        "exposure_flag": [(index, flag)],
-                    }
-                )
+                if len(latest_valid_message) == 0:
+                    message = add_message(
+                        obs_id=f"{exposure_id}",
+                        instrument=self.dataset.lower(),
+                        message_text="",
+                        exposure_flag=flag,
+                        is_new=True,
+                    )
+                else:
+                    message = edit_message(
+                        latest_valid_message["id"][0], exposure_flag=flag
+                    )
                 self.tabulator.patch(
                     {
                         "message_text": [(index, message["message_text"])],
@@ -143,10 +145,14 @@ class ObservatoryLog:
     def _add_new_log_entry(self, index, message):
 
         exposure_id = self.tabulator.value["exposure"][index]
-        message_id = self.tabulator.value["id"][index]
 
         try:
-            is_new = self._is_new(index)
+            latest_valid_message = MessageSearcher(
+                obs_id=exposure_id, order_by=["date_added"]
+            ).search()[-1:]
+
+            is_new = len(latest_valid_message) == 0
+
             if is_new:
                 message = add_message(
                     obs_id=f"{exposure_id}",
@@ -156,7 +162,7 @@ class ObservatoryLog:
                 )
             else:
                 message = edit_message(
-                    message_id=message_id,
+                    message_id=latest_valid_message["id"][0],
                     message_text=message,
                     check_validity=False,
                 )
@@ -174,7 +180,8 @@ class ObservatoryLog:
             self.tabulator.value["id"][index] = message["id"]
         except Exception:
             raise RuntimeError(
-                f"Failed to add message: {exposure_id}, {self.dataset.lower()}, {message}, {is_new}."
+                f"Failed to add message: {exposure_id}, "
+                f"{self.dataset.lower()}, {message}, {is_new}."
             )
 
     def disable_buttons(self):
@@ -201,8 +208,8 @@ class ObservatoryLog:
             record.toDict()
             for record in butler.registry.queryDimensionRecords(
                 "exposure",
-                where=f"instrument = '{self.dataset}' "
-                f"and exposure > {self.obs_id} and exposure < {self.obs_id_end}",
+                where=f"instrument = '{self.dataset}' and "
+                f"exposure > {self.obs_id} and exposure < {self.obs_id_end}",
             )
         )
 
@@ -256,13 +263,82 @@ class ObservatoryLog:
             ]
         )
 
+    def get_patch(self, patch_indexes):
+
+        valid_messages = [
+            message
+            for message in [
+                MessageSearcher(obs_id=obs_id, order_by=["date_added"]).search()[-1:]
+                for obs_id in self.tabulator.value["exposure"][patch_indexes]
+            ]
+            if len(message) > 0
+            and message["id"][0] not in self.tabulator.value["id"].values
+        ]
+
+        if len(valid_messages) == 0:
+            return None
+
+        valid_messages = pd.concat(valid_messages)
+
+        valid_messages["obs_id"] = valid_messages["obs_id"].astype(int)
+
+        mask = self.tabulator.value["exposure"].isin(valid_messages["obs_id"])
+
+        update_obs_id = self.tabulator.value["exposure"][mask]
+        update_loc = self.tabulator.value["exposure"].index[mask]
+
+        update_messages = valid_messages[valid_messages["obs_id"].isin(update_obs_id)]
+
+        update_messages.index = update_loc
+
+        return update_messages[
+            [
+                "user_id",
+                "user_agent",
+                "is_human",
+                "is_valid",
+                "exposure_flag",
+                "id",
+                "message_text",
+            ]
+        ]
+
     def stream(self):
         try:
             data = self.get_data()
             if data is not None:
                 self.tabulator.stream(data, follow=self.follow.value)
+
+            table_size = len(self.tabulator.value)
+            update_size = self.tabulator.page_size + 5
+            self.handle_patch(range(table_size - update_size, table_size))
+
         except Exception as e:
             print(f"Error: {e}")
+
+    def handle_patch(self, patch_indexes):
+        patch = self.get_patch(patch_indexes)
+        if patch is not None:
+            print(f"Patching {len(patch)} messages...")
+            self.tabulator.patch(patch)
+            for index, message_id in zip(patch.index, patch["id"]):
+                self.tabulator.value["id"][index] = message_id
+        else:
+            print("Nothing to patch...")
+
+    def patch_selection(self):
+
+        patch_indexes = range(
+            max([min(self.tabulator.selection) - self.tabulator.page_size, 0]),
+            min(
+                [
+                    max(self.tabulator.selection) + self.tabulator.page_size,
+                    len(self.tabulator.value),
+                ]
+            ),
+        )
+
+        self.handle_patch(patch_indexes)
 
     def selected(self, event):
         if len(event.obj.selection) == 0:
@@ -270,6 +346,7 @@ class ObservatoryLog:
             self.remove_log_entry_button.disabled = True
             self.disable_buttons()
         else:
+            self.patch_selection()
             exposure = ",".join(
                 [
                     f"{event.obj.value['exposure'][index]}"
