@@ -15,6 +15,7 @@ class ObservatoryLog:
 
         self.dataset = dataset
         self.obs_id = obs_id
+        self.obs_id_end = obs_id + 100000
 
         self.df = self.get_data()
         tabulator_formatters = {
@@ -200,7 +201,8 @@ class ObservatoryLog:
             record.toDict()
             for record in butler.registry.queryDimensionRecords(
                 "exposure",
-                where=f"instrument = '{self.dataset}' and exposure > {self.obs_id}",
+                where=f"instrument = '{self.dataset}' "
+                f"and exposure > {self.obs_id} and exposure < {self.obs_id_end}",
             )
         )
 
@@ -211,7 +213,9 @@ class ObservatoryLog:
             [
                 message
                 for message in [
-                    MessageSearcher(obs_id=obs_id).search()
+                    MessageSearcher(obs_id=obs_id, order_by=["date_added"]).search()[
+                        -1:
+                    ]
                     for obs_id in exposures["id"]
                 ]
                 if len(message) > 0
@@ -222,34 +226,14 @@ class ObservatoryLog:
 
         self.obs_id = exposures["id"].max()
 
-        data = (
-            pd.merge(
-                left=exposures,
-                right=valid_messages,
-                how="left",
-                left_on="id",
-                right_on="obs_id",
-            )
-            .fillna("")
-            .get(
-                [
-                    "instrument_x",
-                    "user_id",
-                    "user_agent",
-                    "is_human",
-                    "is_valid",
-                    "exposure_flag",
-                    "message_text",
-                    "id_y",
-                    "physical_filter",
-                    "exposure_time",
-                    "observation_type",
-                    "observation_reason",
-                    "target_name",
-                    "science_program",
-                ]
-            )
-        )
+        data = pd.merge(
+            left=exposures,
+            right=valid_messages,
+            how="left",
+            left_on="id",
+            right_on="obs_id",
+        ).fillna("")
+
         data["exposure"] = exposures["id"]
         data["id"] = data["id_y"]
 
