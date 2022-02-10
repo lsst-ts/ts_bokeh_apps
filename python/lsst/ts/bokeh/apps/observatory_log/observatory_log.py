@@ -135,9 +135,7 @@ class ObservatoryLog:
                 )
                 self.tabulator.value["id"][index] = message["id"]
             except Exception:
-                raise RuntimeError(
-                    f"Failed to set flag {flag} for message: {message_id}."
-                )
+                raise RuntimeError(f"Failed to set flag {flag} for message: {index}.")
 
     def _is_new(self, index):
         return len(self.tabulator.value["id"][index]) == 0
@@ -398,7 +396,7 @@ class ObservatoryLog:
     def component(self):
 
         return pn.Column(
-            pn.Row(*self.exposure_flag_buttons, self.remove_log_entry_button),
+            pn.Row(*self.exposure_flag_buttons),
             self.tabulator,
             self.text_table,
         )
