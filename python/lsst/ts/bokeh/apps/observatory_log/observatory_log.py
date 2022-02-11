@@ -5,7 +5,13 @@ from bokeh.models.widgets.tables import NumberFormatter
 
 import lsst.daf.butler as dafButler
 
-from .helpers import add_message, edit_message, delete_message, MessageSearcher
+from .helpers import (
+    add_message,
+    edit_message,
+    delete_message,
+    MessageSearcher,
+    get_empty_message_dataframe,
+)
 
 __all__ = ["ObservatoryLog"]
 
@@ -214,20 +220,22 @@ class ObservatoryLog:
         if len(exposures) == 0:
             return None
 
-        valid_messages = pd.concat(
-            [
-                message
-                for message in [
-                    MessageSearcher(obs_id=obs_id, order_by=["date_added"]).search()[
-                        -1:
-                    ]
-                    for obs_id in exposures["id"]
-                ]
-                if len(message) > 0
-            ]
-        )
         exposures["id"] = exposures["id"].astype(int)
-        valid_messages["obs_id"] = valid_messages["obs_id"].astype(int)
+
+        valid_messages = [
+            message
+            for message in [
+                MessageSearcher(obs_id=obs_id, order_by=["date_added"]).search()[-1:]
+                for obs_id in exposures["id"]
+            ]
+            if len(message) > 0
+        ]
+
+        if len(valid_messages) > 0:
+            valid_messages = pd.concat(valid_messages)
+            valid_messages["obs_id"] = valid_messages["obs_id"].astype(int)
+        else:
+            valid_messages = get_empty_message_dataframe()
 
         self.obs_id = exposures["id"].max()
 

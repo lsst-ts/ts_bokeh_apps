@@ -8,6 +8,7 @@ from typing import List
 
 __all__ = (
     "ENDPOINT",
+    "get_empty_message_dataframe",
     "add_message",
     "get_messages",
     "get_message_by_id",
@@ -18,6 +19,22 @@ __all__ = (
 )
 
 ENDPOINT = "https://summit-lsp.lsst.codes/exposurelog/"
+
+
+def get_empty_message_dataframe():
+    return pd.DataFrame(
+        {
+            "user_id": [],
+            "user_agent": [],
+            "is_human": [],
+            "is_valid": [],
+            "exposure_flag": [],
+            "id": [],
+            "message_text": [],
+            "obs_id": [],
+            "instrument": [],
+        }
+    )
 
 
 def check_resp(resp, success=HTTPStatus.OK):
