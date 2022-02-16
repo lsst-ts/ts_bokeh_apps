@@ -325,12 +325,9 @@ class ObservatoryLog:
     def handle_patch(self, patch_indexes):
         patch = self.get_patch(patch_indexes)
         if patch is not None:
-            print(f"Patching {len(patch)} messages...")
             self.tabulator.patch(patch)
             for index, message_id in zip(patch.index, patch["id"]):
                 self.tabulator.value["id"][index] = message_id
-        else:
-            print("Nothing to patch...")
 
     def patch_selection(self):
 
