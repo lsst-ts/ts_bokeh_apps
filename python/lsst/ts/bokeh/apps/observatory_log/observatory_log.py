@@ -112,7 +112,11 @@ class ObservatoryLog:
 
             exposure_id = self.tabulator.value["exposure"][index]
             latest_valid_message = MessageSearcher(
-                obs_id=exposure_id, order_by=["date_added"]
+                instruments=[
+                    self.dataset.lower(),
+                ],
+                obs_id=exposure_id,
+                order_by=["date_added"],
             ).search()[-1:]
 
             try:
@@ -152,7 +156,11 @@ class ObservatoryLog:
 
         try:
             latest_valid_message = MessageSearcher(
-                obs_id=exposure_id, order_by=["date_added"]
+                instruments=[
+                    self.dataset.lower(),
+                ],
+                obs_id=exposure_id,
+                order_by=["date_added"],
             ).search()[-1:]
 
             is_new = len(latest_valid_message) == 0
@@ -225,7 +233,13 @@ class ObservatoryLog:
         valid_messages = [
             message
             for message in [
-                MessageSearcher(obs_id=obs_id, order_by=["date_added"]).search()[-1:]
+                MessageSearcher(
+                    instruments=[
+                        self.dataset.lower(),
+                    ],
+                    obs_id=obs_id,
+                    order_by=["date_added"],
+                ).search()[-1:]
                 for obs_id in exposures["id"]
             ]
             if len(message) > 0
@@ -274,7 +288,13 @@ class ObservatoryLog:
         valid_messages = [
             message
             for message in [
-                MessageSearcher(obs_id=obs_id, order_by=["date_added"]).search()[-1:]
+                MessageSearcher(
+                    instruments=[
+                        self.dataset.lower(),
+                    ],
+                    obs_id=obs_id,
+                    order_by=["date_added"],
+                ).search()[-1:]
                 for obs_id in self.tabulator.value["exposure"][patch_indexes]
             ]
             if len(message) > 0
