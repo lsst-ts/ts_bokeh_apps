@@ -32,6 +32,7 @@ class ObservatoryLog:
             self.df, layout="fit_data_fill", height=450, formatters=tabulator_formatters
         )
         self.tabulator.disabled = True
+        self.tabulator.show_index = False
         self.tabulator.hidden_columns = [
             "id",
             "is_human",
