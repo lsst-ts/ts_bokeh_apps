@@ -331,6 +331,9 @@ class ObservatoryLog:
 
     def stream(self):
         try:
+            if not self.text_table.disabled:
+                return
+
             data = self.get_data()
             if data is not None:
                 self.tabulator.stream(data, follow=self.follow.value)
