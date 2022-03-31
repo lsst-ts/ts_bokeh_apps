@@ -31,12 +31,12 @@ from bokeh.models import (
 from bokeh.plotting import figure
 from bokeh.layouts import column, row
 
-from lsst.ts.bokeh.apps.base_layout import BaseLayout
-from lsst.ts.bokeh.apps.auxtel.image_explorer.data_aggregator import DataAggregator
+from ..base_layout import BaseLayout
+from .data_aggregator import DataAggregator
 
 
 class Layout(BaseLayout):
-    """"""
+    """Layout for the image explorer app."""
 
     def __init__(self) -> None:
         super().__init__(DataAggregator())
@@ -72,9 +72,9 @@ class Layout(BaseLayout):
             y="y",
         )
         p.grid.grid_line_width = 0.5
-        color_bar = ColorBar(color_mapper=color_mapper, label_standoff=12)
+        self.color_bar = ColorBar(color_mapper=color_mapper, label_standoff=12)
 
-        p.add_layout(color_bar, "right")
+        p.add_layout(self.color_bar, "right")
 
         text_input = TextInput(
             value=f"{self.data_aggregator.day_obs}{self.data_aggregator.seq_num:05d}",

@@ -19,9 +19,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import typing
 import numpy
-
-import lsst.daf.butler as dafButler
 
 from lsst_efd_client import EfdClient
 
@@ -43,16 +42,13 @@ class DataAggregator(BaseDataAggregator):
         self.seq_num = 236
         self.data_cache = dict()
 
-    def create_data_sources(self):
-        self.butler = dafButler.Butler(
-            "/repo/LATISS", instrument="LATISS", collections="LATISS/raw/all"
-        )
+    def create_data_sources(self) -> None:
         self.efd = EfdClient("summit_efd")
         qm_config = QuickFrameMeasurementTask.ConfigClass()
         self.qm = QuickFrameMeasurementTask(config=qm_config)
-        self.best_effort_isr = BestEffortIsr(butler=self.butler, repodirIsGen3=True)
+        self.best_effort_isr = BestEffortIsr("/repo/LATISS")
 
-    def initialize_data_sources(self, *args, **kwargs):
+    def initialize_data_sources(self, *args, **kwargs) -> None:
         """Initialize data sources."""
 
         self.create_data_sources()
@@ -69,7 +65,7 @@ class DataAggregator(BaseDataAggregator):
             )
         )
 
-    def retrieve_data(self, *args, **kwargs):
+    def retrieve_data(self, *args: typing.Any, **kwargs: typing.Any) -> None:
 
         exposure_id = f"{self.day_obs}{self.seq_num:05d}"
         if exposure_id in self.data_cache:

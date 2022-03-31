@@ -24,6 +24,8 @@ from lsst.ts.bokeh.apps.auxtel.image_explorer.layout import Layout
 
 
 class Interaction(BaseInteraction):
+    """Interaction class for the image explorer app."""
+
     def __init__(self) -> None:
         super().__init__(Layout())
 
@@ -53,5 +55,8 @@ class Interaction(BaseInteraction):
     def drop_down_callback(self, event):
         self.log.debug(f"Changing collor pallet {event.item}.")
         self.layout.image.glyph.color_mapper = self.layout._get_color_mapper(
+            palette=event.item
+        )
+        self.layout.color_bar.glyph.color_mapper = self.layout._get_color_mapper(
             palette=event.item
         )
