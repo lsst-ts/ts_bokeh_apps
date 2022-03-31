@@ -39,5 +39,5 @@ class Interaction(BaseInteraction):
 
     def setup_interaction(self):
 
-        text_input = self.page.children[0]
+        text_input = self.layout.text_input
         text_input.on_change("value", self.handle_text_input)

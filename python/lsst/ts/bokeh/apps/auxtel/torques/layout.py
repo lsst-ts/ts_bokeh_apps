@@ -33,7 +33,9 @@ class Layout(BaseLayout):
     def __init__(self) -> None:
         super().__init__(DataAggregator())
 
-    def get_page(self):
+        self.make_layout()
+
+    def make_layout(self):
         mount_start = self.data_aggregator.data_sources["column_data_source"].data[
             "mount_x"
         ][0]
@@ -124,16 +126,18 @@ class Layout(BaseLayout):
         s8.xaxis.axis_label = "Elapsed Time"
         s9.xaxis.axis_label = "Elapsed Time"
 
-        grid = gridplot([[s1, s2, s3], [s4, s5, s6], [s7, s8, s9]])
+        self.grid = gridplot([[s1, s2, s3], [s4, s5, s6], [s7, s8, s9]])
 
-        text_input = TextInput(
+        self.text_input = TextInput(
             value="",
             title="Type exposure id and press enter (e.g. 2021081700541):",
             max_length=15,
             sizing_mode="fixed",
         )
 
-        return column(text_input, grid)
+    def get_page(self):
+
+        return column(self.text_input, self.grid)
 
     def _make_plot(self, title, xnames, ynames, lcolors=None, legend=None, start=None):
         if type(xnames) is str and type(ynames) is str:
