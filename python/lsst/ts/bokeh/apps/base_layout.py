@@ -24,6 +24,8 @@ __all__ = ["BaseLayout"]
 import abc
 import logging
 
+from bokeh.models import LayoutDOM
+
 
 class BaseLayout(metaclass=abc.ABCMeta):
     """Base layout class for building bokeh apps."""
@@ -40,6 +42,6 @@ class BaseLayout(metaclass=abc.ABCMeta):
             self.log.exception("Failed to retrieve initial dataset.")
 
     @abc.abstractmethod
-    def get_page(self):
+    def get_page(self) -> LayoutDOM:
         """Method to initialize data sources."""
         raise NotImplementedError()
