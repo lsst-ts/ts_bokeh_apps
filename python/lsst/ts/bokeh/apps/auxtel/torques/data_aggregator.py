@@ -94,16 +94,16 @@ class DataAggregator(BaseDataAggregator):
         mountpos = await self.efd.select_packed_time_series(
             "lsst.sal.ATMCS.mount_AzEl_Encoders",
             ["azimuthCalculatedAngle", "elevationCalculatedAngle"],
-            md.timespan.begin,
-            md.timespan.end,
+            md.timespan.begin.utc,
+            md.timespan.end.utc,
         )
         rot = await self.efd.select_packed_time_series(
             "lsst.sal.ATMCS.mount_Nasmyth_Encoders",
             [
                 "nasmyth2CalculatedAngle",
             ],
-            md.timespan.begin,
-            md.timespan.end,
+            md.timespan.begin.utc,
+            md.timespan.end.utc,
         )
         torques = await self.efd.select_packed_time_series(
             "lsst.sal.ATMCS.measuredTorque",
@@ -113,8 +113,8 @@ class DataAggregator(BaseDataAggregator):
                 "elevationMotorTorque",
                 "nasmyth2MotorTorque",
             ],
-            md.timespan.begin,
-            md.timespan.end,
+            md.timespan.begin.utc,
+            md.timespan.end.utc,
         )
 
         afit = numpy.polyfit(mountpos.times, mountpos["azimuthCalculatedAngle"], 1)
