@@ -1,4 +1,25 @@
-from dataclasses import field, dataclass
+# This file is part of ts_bokeh_apps.
+#
+# Developed for the Vera Rubin Observatory Telescope and Site.
+# This product includes software developed by the LSST Project
+# (https://www.lsst.org).
+# See the COPYRIGHT file at the top-level directory of this distribution
+# for details of code ownership.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from dataclasses import dataclass
 from datetime import datetime
 from http import HTTPStatus
 import os
@@ -74,11 +95,14 @@ def add_message(
     Parameters
     ----------
     obs_id : `str`
-        The string identifier for the observation ID to associate with this message.
-        It must exist in the backing registry if ``is_new`` is set to `False` (the default).
+        The string identifier for the observation ID to associate with this
+        message.
+        It must exist in the backing registry if ``is_new`` is set to `False`
+        (the default).
     instrument : `str`
         The name of the instrument for the observation.
-        These are not validated against a known set by the service, so convention must be followed.
+        These are not validated against a known set by the service, so
+        convention must be followed.
     message_text : `str`
         The text of the message
     user_id : `str`, optional
@@ -105,7 +129,7 @@ def add_message(
     """
     if exposure_flag not in ["none", "junk", "questionable"]:
         raise ValueError(
-            "The exposure_flag argument must be one of: none, junk, or questionable"
+            "The exposure_flag argument must be one of: none, junk, orquestionable"
         )
     data = {
         "obs_id": obs_id,
@@ -147,7 +171,8 @@ def get_messages(all=False, num=50, as_dataframe=True):
     Returns
     -------
     results : `list` of `dict` or `pd.DataFrame`
-        The messages as either a `list` of `dict` objects or a `pd.DataFrame` containing the messages.
+        The messages as either a `list` of `dict` objects or a `pd.DataFrame`
+        containing the messages.
     """
     if all:
         params = {"is_valid": "either", "limit": num}
@@ -222,12 +247,14 @@ def edit_message(
     Returns
     -------
     returns : 'dict'
-        A dictionary containing the edited contents of the message as ingested in the service.
+        A dictionary containing the edited contents of the message as ingested
+        in the service.
 
     Raises
     ------
     ValueError
-        Raises if the message being edited is marked invalid and ``check_validity`` is `True`.
+        Raises if the message being edited is marked invalid and
+        ``check_validity`` is `True`.
     """
     resp = requests.get(f"{ENDPOINT}messages/{message_id}")
     check_resp(resp)

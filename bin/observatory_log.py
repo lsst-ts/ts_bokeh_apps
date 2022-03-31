@@ -19,4 +19,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .observatory_log import ObservatoryLog
+from lsst.ts.bokeh.apps.observatory_log import Interaction
+
+observatory_log = Interaction()
+
+observatory_log()
