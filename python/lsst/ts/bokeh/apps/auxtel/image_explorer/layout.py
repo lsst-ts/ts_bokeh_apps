@@ -31,7 +31,7 @@ from bokeh.models import (
 from bokeh.plotting import figure
 from bokeh.layouts import column, row
 
-from ..base_layout import BaseLayout
+from ...base_layout import BaseLayout
 from .data_aggregator import DataAggregator
 
 
