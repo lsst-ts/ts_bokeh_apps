@@ -29,7 +29,8 @@ class ObservatoryLog:
         }
 
         self.tabulator = pn.widgets.Tabulator(
-            self.df, layout="fit_data_fill", height=450, formatters=tabulator_formatters
+            self.df, layout="fit_data_fill", height=450, formatters=tabulator_formatters, frozen_columns=['exposure'], 
+            pagination=None
         )
         self.tabulator.disabled = True
         self.tabulator.show_index = False
