@@ -33,8 +33,9 @@ class ObservatoryLog:
             pagination=None
         )
         self.tabulator.disabled = True
-        self.tabulator.show_index = False
+        self.tabulator.show_index = True
         self.tabulator.hidden_columns = [
+            "index",
             "id",
             "is_human",
             "is_valid",
@@ -61,7 +62,7 @@ class ObservatoryLog:
             pn.widgets.Button(
                 name="questionable",
                 button_type="warning",
-                width=50,
+                width=100,
                 max_width=100,
                 width_policy="fixed",
             ),
