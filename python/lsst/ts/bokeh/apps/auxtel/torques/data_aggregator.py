@@ -42,9 +42,9 @@ class DataAggregator(BaseDataAggregator):
 
     def create_data_sources(self):
         self.butler = dafButler.Butler(
-            "/repo/LATISS", instrument="LATISS", collections="LATISS/raw/all"
+            "LATISS", instrument="LATISS", collections="LATISS/raw/all"
         )
-        self.efd = EfdClient("summit_efd")
+        self.efd = EfdClient("usdf_efd")
 
     def initialize_data_sources(self, *args, **kwargs):
         """Initialize data sources."""
