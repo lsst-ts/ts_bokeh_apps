@@ -51,3 +51,8 @@ class BaseInteraction(metaclass=abc.ABCMeta):
         self.doc = curdoc()
 
         self.doc.add_root(self.page)
+
+    def modify_doc(self, doc) -> None:
+
+        self.page = self.layout.get_page()
+        doc.add_root(self.page)
