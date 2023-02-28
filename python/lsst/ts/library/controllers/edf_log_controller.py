@@ -23,11 +23,18 @@ class EdfLogController:
 
     def get_sal_index_by_interval(self, date_interval: DateInterval) -> List[Tuple[datetime, int]]:
         """
-        Search the message associated with the sal_index and the time
+        Returns datetime and sal_index for all messages which date is inside the interval selected in dumped DB
+        :param date_interval: date interval that messages should belong to
+        :return: List with tuples values containing datetime and sal_index
+        """
+        values = await self._data_controller.select_interval(EdfLogController._LOG_TOPIC, ["salIndex"], None)
+        return values
+
+    def get_log_information(self, sal_index: int, search_dt: datetime) -> str:
+        """
+        Search the message associated with the sal_index and the time in dumped DB
         :param sal_index: int with the sal index information
         :param search_dt: datetime of the message
         :return: string with the messages or raise exception if not found
         """
-        values = await self._data_controller.select_interval(EdfLogController._LOG_TOPIC, ["salIndex"], date_interval)
-        return values
-
+        pass
