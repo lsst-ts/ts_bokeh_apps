@@ -12,7 +12,7 @@ class EdfLogController:
     def __init__(self, data_controller: EDFDataController):
         self._data_controller = data_controller
 
-    def get_last_n_sal_index(self, n: int = _SAL_INDEX_TP_N_RETURN) -> List[Tuple[datetime, int]]:
+    async def get_last_n_sal_index(self, n: int = _SAL_INDEX_TP_N_RETURN) -> List[Tuple[datetime, int]]:
         """
         Returns datetime and sal_index for all messages which date is inside the interval selected
         :param date_interval: date interval that messages should belong to
@@ -21,7 +21,7 @@ class EdfLogController:
         values = await self._data_controller.select_top_n(EdfLogController._LOG_TOPIC, ["salIndex"], n)
         return values
 
-    def get_sal_index_by_interval(self, date_interval: DateInterval) -> List[Tuple[datetime, int]]:
+    async def get_sal_index_by_interval(self, date_interval: DateInterval) -> List[Tuple[datetime, int]]:
         """
         Search the message associated with the sal_index and the time
         :param sal_index: int with the sal index information

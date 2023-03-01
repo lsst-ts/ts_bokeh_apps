@@ -25,7 +25,6 @@ import abc
 import logging
 
 from bokeh.plotting import curdoc
-
 from .base_layout import BaseLayout
 
 
@@ -33,11 +32,9 @@ class BaseInteraction(metaclass=abc.ABCMeta):
     """Base layout class for building bokeh apps."""
 
     def __init__(self, layout: BaseLayout) -> None:
-
+        self.page = None
         self.log = logging.getLogger(__name__)
-
         self.layout = layout
-
         self.setup_interaction()
 
     @abc.abstractmethod
@@ -45,14 +42,10 @@ class BaseInteraction(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     def __call__(self) -> None:
-
         self.page = self.layout.get_page()
-
         self.doc = curdoc()
-
         self.doc.add_root(self.page)
 
     def modify_doc(self, doc) -> None:
-
         self.page = self.layout.get_page()
         doc.add_root(self.page)

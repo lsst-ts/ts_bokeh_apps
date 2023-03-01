@@ -23,9 +23,7 @@ import numpy
 import asyncio
 
 import lsst.daf.butler as dafButler
-
 from lsst_efd_client import EfdClient
-
 from bokeh.models import ColumnDataSource
 
 from lsst.ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
@@ -76,7 +74,9 @@ class DataAggregator(BaseDataAggregator):
         asyncio.run(self._retrieve_data_async())
 
     async def _retrieve_data_async(self):
-        """"""
+        """
+        :return:
+        """
 
         t = [
             r
