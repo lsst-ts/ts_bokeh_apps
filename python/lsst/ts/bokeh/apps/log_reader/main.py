@@ -67,10 +67,10 @@ if __name__.startswith("bokeh_app_"):
     print("name: {}".format(__name__))
     app = LogViewerApplication()
     app.deploy()
-    app.initialize()
+    #pp.initialize()
 
 if __name__ == '__main__':
     widget = LogViewerApplication()
     widget.deploy()
-    app.initialize()
+    widget.initialize()
 
