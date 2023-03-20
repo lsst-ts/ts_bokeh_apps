@@ -64,13 +64,8 @@ Inside rubin-devl it may be needed to create a full development environment whic
 Once inside the environment some dependencies must be installed:
 
 .. code-block:: bash
-    pip install nest_asyncio
-    pip install lsst-daf-butler
-    pip install lsst-edf
-    pip install lsst-efd-client
-    pip install bokeh==2.4.3 (*)
+    pip install -r requirements.txt
 
-(*) pip install --upgrade bokeh==2.4.3 in case bokeh has been already installed and we need to downgrade it.
 
 With the environment ready the installation of this package can be done, executing from root package folder:
 
