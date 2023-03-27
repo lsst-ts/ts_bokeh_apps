@@ -29,4 +29,11 @@
     </div>
 </div>
 <script src='log_reader/static/js/log_reader_actions.js'></script>
+<script type="text/javascript">
+    window.onload = function(){
+        data_sever_information.set_host("{{ data_server_host | safe }}");
+        data_sever_information.set_port("{{ data_server_port | safe }}");
+        initialize_scroll();
+    }
+</script>
 {% endblock %}

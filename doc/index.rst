@@ -72,7 +72,9 @@ With the environment ready the installation of this package can be done, executi
 .. code-block:: bash
     pip install -e .*
 
-Now the IP of each server(*) (s3dflogin and rubin-devl) is needed, for example using ifconfig command. With this values the bokeh server can be launched:
+Now the IP of each server(*) (s3dflogin and rubin-devl) is needed, for example using ifconfig command.
+
+With this values the bokeh server can be launched:
 
 (*) IP may change for every connection so checking the IPs must be done each time the bokeh server is launched.
 

@@ -14,20 +14,21 @@ let sal_index = {
     selected: null,
 
     update: (index) => {
-        console.log(index)
         if (index === "")
             sal_index.selected = null;
 
         else
             sal_index.selected = index;
-        },
-    reset: () => {sal_index.selected = null;}
+    },
+    reset: () => {
+        sal_index.selected = null;
+    }
 }
-
 
 
 function select_date(new_date_str) {
     clear_accordion();
+    add_information_label();
     get_log_values_from_date(new Date(new_date_str));
 }
 
@@ -82,7 +83,15 @@ function clear_accordion() {
     }
 }
 
-function add_data_to_accordion(data) {
+function add_information_label() {
+    const global_parent = document.getElementById('show_logger');
+    let label = document.createElement('div');
+    label.innerText = "Waiting for data";
+    global_parent.appendChild(label)
+}
+
+async function add_data_to_accordion(data) {
+    await new Promise(r => setTimeout(r, 2000));
     const global_parent = document.getElementById('show_logger');
     let accordion = document.createElement('div');
     accordion.className = 'accordion';
@@ -95,7 +104,7 @@ function add_data_to_accordion(data) {
         const accordion_header = document.createElement('div');
         accordion_header.className = "accordion-item-header not-selectable";
         accordion_header.innerText = `Index: ${data[i][2]} - Timestamp: ${data[i][0].replace("GMT", "UTC")}`;
-        //set_red_color(accordion_header, data[i][3]);
+        set_red_color(accordion_header, data[i][3]);
 
         accordion_header.onclick = (event) => {
             selected_header(accordion_header)
@@ -124,11 +133,11 @@ function advance_log_info() {
     }
     for (let index = initial_index; index < accordionItemHeaders.length; index++) {
         const accordionItemHeader = accordionItemHeaders[index];
-        if(sal_index.selected === null || accordionItemHeader.innerText.includes(sal_index.selected)) {
+        if (sal_index.selected === null || accordionItemHeader.innerText.includes(sal_index.selected)) {
             accordionItemHeader.click()
             setTimeout(() => {
-                    accordionItemHeader.scrollIntoView()
-                }, "200");
+                accordionItemHeader.scrollIntoView()
+            }, "200");
             break;
         }
     }
@@ -142,9 +151,27 @@ function rewind_log_info() {
     }
     for (let index = initial_index; index >= 0; index--) {
         const accordionItemHeader = accordionItemHeaders[index];
-        if(sal_index.selected === null || accordionItemHeader.innerText.includes(sal_index.selected)) {
+        if (sal_index.selected === null || accordionItemHeader.innerText.includes(`Index: ${sal_index.selected}`)) {
             accordionItemHeader.scrollIntoView()
             accordionItemHeader.click();
+            break;
+        }
+    }
+}
+
+function date_to_str(date) {
+    date_list = date.toDateString().split(" ");
+    return `${date_list[0]}, ${date_list[2]} ${date_list[1]} ${date_list[3]}`
+}
+
+function move_to_date(date) {
+    const date_str = date_to_str(date);
+    const accordionItemHeaders = document.querySelectorAll(".accordion-item-header");
+    for (let index = 0; index < accordionItemHeaders.length; index++) {
+        const accordionItemHeader = accordionItemHeaders[index];
+        if (accordionItemHeader.innerText.includes(date_str)) {
+            accordionItemHeader.click()
+            accordionItemHeader.scrollIntoView();
             break;
         }
     }
@@ -159,21 +186,15 @@ async function get_log_values_from_date(date = new Date(),
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const currentDate = `${year}-${month}-${day}`;
-    fetch("http://127.0.0.1:8000/log_messages" + `?begin_date=${currentDate}&prev_delta_hours=${prev_delta_hours}&prev_delta_days=${prev_delta_days}&post_delta_hours=${post_delta_hours}&post_delta_days=${post_delta_days}`)
+    fetch(`http://${data_sever_information._host}:${data_sever_information._port}/log_messages` + `?begin_date=${currentDate}&prev_delta_hours=${prev_delta_hours}&prev_delta_days=${prev_delta_days}&post_delta_hours=${post_delta_hours}&post_delta_days=${post_delta_days}`)
         .then((response) => response.json())
-        .then((data) => add_data_to_accordion(data));
+        .then((data) => add_data_to_accordion(data).then(() => move_to_date(date)))
 }
 
 async function get_last_logs(n) {
-    fetch("http://127.0.0.1:8000/log_messages" + `?n=${n}`)
+    fetch(`http://${data_sever_information._host}:${data_sever_information._port}/log_messages` + `?n=${n}`)
         .then((response) => response.json())
         .then((data) => add_data_to_accordion(data));
-}
-
-async function get_backward_new_log_values(begin_datatime) {
-    fetch("http://127.0.0.1:8000/log_messages" + "?language=python")
-        .then((response) => response.json())
-        .then((data) => create_accordion(data));
 }
 
 /*
@@ -197,9 +218,20 @@ async function get_backward_new_log_values(begin_datatime) {
 </div>
 */
 
-window.onload = function () {
+function initialize_scroll() {
     let element = document.getElementById('show_logger');
     element.onscroll = scroll_actions.update;
     scroll_actions.percentage = element.scrollTop / (element.scrollHeight - element.offsetHeight);
     get_last_logs(100);
 };
+
+let data_sever_information = {
+    _host: "127.0.0.1",
+    _port: 8000,
+    set_host: (host) => {
+        data_sever_information.host = host;
+    },
+    set_port: (port) => {
+        data_sever_information.port = port;
+    }
+}

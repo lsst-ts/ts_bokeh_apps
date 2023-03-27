@@ -23,7 +23,7 @@ class EdfLogController:
         :param date_interval: date interval that messages should belong to
         :return: List with tuples values containing datetime and sal_index
         """
-        values = await self._data_controller.select_top_n(EdfLogController._LOG_TOPIC, ["ScriptID", "message", 'salIndex', 'traceback'], n)
+        values = await self._data_controller.select_top_n(EdfLogController._LOG_TOPIC, ["ScriptID", 'salIndex', "message"], n)
         return values
 
     async def get_logs_by_interval(self, date_interval: DateInterval) -> dataframe:
