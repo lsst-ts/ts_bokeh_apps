@@ -86,7 +86,7 @@
 #
 # class SimulatedLogController:
 #     """
-#     Handler over a edf db dump to make local tests
+#     Handler over a efd db dump to make local tests
 #     """
 #     _SAL_INDEX_TP_N_RETURN = 10
 #     _DATETIME_INDEX = 0

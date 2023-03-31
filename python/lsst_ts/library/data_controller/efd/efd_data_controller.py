@@ -7,9 +7,9 @@ from pandas.core.interchange import dataframe
 from lsst_ts.library.utils.date_interval import DateInterval
 
 
-class EDFDataController:
+class EFDDataController:
     """
-    Controller to encapsulate the work with the EDF Database
+    Controller to encapsulate the work with the EFD Database
     """
 
     def __init__(self, efd_client: str):
