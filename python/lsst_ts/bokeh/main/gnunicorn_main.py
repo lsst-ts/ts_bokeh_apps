@@ -9,7 +9,7 @@ from flask_cors import CORS
 from lsst_ts.bokeh.apps.log_reader.flask_export import initialize_app
 from lsst_ts.bokeh.main.server_information import FlaskInformation
 from lsst_ts.bokeh.main.main_app import initialize_main_app, bk_worker_gnunicorn
-from lsst_ts.library.data_controller.edf.simulated_data_controller import SimulatedDataController
+from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController
 
 if __name__ == '__main__':
     print('This script is intended to be run with gunicorn. e.g.')
@@ -25,9 +25,9 @@ port = 5006
 app = Flask(__name__)
 CORS(app)
 information = FlaskInformation(server_name, port, app)
-edf_controller = SimulatedDataController()
-#edf_controller =  SimulatedDataController("usdf_efd")
-initialize_app(information, edf_controller)
+efd_controller = SimulatedDataController()
+#efd_controller =  SimulatedDataController("usdf_efd")
+initialize_app(information, efd_controller)
 initialize_main_app(information)
 t = Thread(target=bk_worker_gnunicorn, args=[information])
 t.daemon = True

@@ -5,7 +5,7 @@ import pandas as pd
 from IPython.core.display_functions import display
 from pandas.core.interchange import dataframe
 
-from lsst_ts.library.data_controller.edf.data_controller import DataController
+from lsst_ts.library.data_controller.efd.data_controller import DataController
 from lsst_ts.library.utils.date_interval import DateInterval
 
 

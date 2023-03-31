@@ -5,12 +5,12 @@ from typing import Tuple, List
 import pandas as pd
 from pandas.core.interchange import dataframe
 
-from lsst_ts.library.data_controller.edf.simulated_data_controller import SimulatedDataController
+from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController
 from lsst_ts.library.utils.date_interval import DateInterval
-from lsst_ts.library.data_controller.edf.data_controller import DataController
+from lsst_ts.library.data_controller.efd.data_controller import DataController
 
 
-class EdfLogController:
+class EfdLogController:
     _SAL_INDEX_TP_N_RETURN = 10
     _LOG_TOPIC = "lsst.sal.Script.logevent_logMessage"
 
@@ -23,7 +23,7 @@ class EdfLogController:
         :param date_interval: date interval that messages should belong to
         :return: List with tuples values containing datetime and sal_index
         """
-        values = await self._data_controller.select_top_n(EdfLogController._LOG_TOPIC, ["ScriptID", 'salIndex', "message"], n)
+        values = await self._data_controller.select_top_n(EfdLogController._LOG_TOPIC, ["ScriptID", 'salIndex', "message"], n)
         return values
 
     async def get_logs_by_interval(self, date_interval: DateInterval) -> dataframe:
@@ -34,7 +34,7 @@ class EdfLogController:
         :param search_dt: datetime of the message
         :return: string with the messages or raise exception if not found
         """
-        values = await self._data_controller.select_interval(EdfLogController._LOG_TOPIC, ["ScriptID", "message", 'salIndex', 'traceback'], date_interval)
+        values = await self._data_controller.select_interval(EfdLogController._LOG_TOPIC, ["ScriptID", "message", 'salIndex', 'traceback'], date_interval)
         return values
 
     async def get_n_logs_by_date(self, begin_date: datetime, minimum_return_values: int = 0) -> dataframe:
@@ -58,7 +58,7 @@ class EdfLogController:
 
 if __name__ == '__main__':
     data_controller = SimulatedDataController()
-    edf_log_controller = EdfLogController(data_controller)
+    efd_log_controller = EfdLogController(data_controller)
     # date_interval = DateInterval.from_date(datetime.today(), timedelta(hours = 1))
-    # response = await edf_log_controller.get_n_logs_by_date(datetime.today(), 10)
+    # response = await efd_log_controller.get_n_logs_by_date(datetime.today(), 10)
     # print(response)

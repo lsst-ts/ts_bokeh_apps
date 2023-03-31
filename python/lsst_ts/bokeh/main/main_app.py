@@ -11,10 +11,10 @@ from tornado.ioloop import IOLoop
 from tornado.web import StaticFileHandler
 
 from lsst_ts.bokeh.apps.log_reader.flask_export import initialize_app
-from lsst_ts.bokeh.apps.simple_plot.flask_export import initialize_app as initialize_simple_plot
+#from lsst_ts.bokeh.apps.simple_plot.flask_export import initialize_app as initialize_simple_plot
 from lsst_ts.bokeh.main.server_information import ServerInformation
-from lsst_ts.library.data_controller.edf.edf_data_controller import EDFDataController
-from lsst_ts.library.data_controller.edf.simulated_data_controller import SimulatedDataController
+from lsst_ts.library.data_controller.efd.efd_data_controller import EFDDataController
+from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController
 
 
 def initialize_main_app(flask_information: ServerInformation):
@@ -73,10 +73,9 @@ if __name__ == '__main__':
     information.add_applications_information("data_server_port", 8000)
     information.add_bokeh_allow_websocket_origin("localhost:5006")
     information.add_bokeh_allow_websocket_origin("172.16.20.8:5006")
-    edf_controller = SimulatedDataController()
-    # edf_controller =  EDFDataController("usdf_efd")
-    initialize_app(information, edf_controller)
-    initialize_simple_plot(information, edf_controller)
+    efd_controller = SimulatedDataController()
+    # efd_controller =  EFDDataController("usdf_efd")
+    initialize_app(information, efd_controller)
     initialize_main_app(information)
     Thread(target=bk_worker, args=[information]).start()
 

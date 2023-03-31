@@ -1,15 +1,12 @@
 import os
 from datetime import datetime, timedelta
-from pprint import pprint
 from threading import Thread
 
 import pytz
 from bokeh.document import Document
 from bokeh.server.server import Server
 from flask import Flask, request, jsonify
-from flask_cors import cross_origin
 from jinja2 import FileSystemLoader, Environment
-from pytz import utc
 from tornado.ioloop import IOLoop
 from tornado.web import StaticFileHandler
 
@@ -18,9 +15,9 @@ from lsst_ts.bokeh.apps.log_reader.main import LogViewerApplication
 __all__ = ['initialize_app']
 
 from lsst_ts.bokeh.main.server_information import ServerInformation
-from lsst_ts.library.controllers.edf_log_controller import EdfLogController
-from lsst_ts.library.data_controller.edf.data_controller import DataController
-from lsst_ts.library.data_controller.edf.edf_data_controller import EDFDataController
+from lsst_ts.library.controllers.efd_log_controller import EfdLogController
+from lsst_ts.library.data_controller.efd.data_controller import DataController
+from lsst_ts.library.data_controller.efd.efd_data_controller import EFDDataController
 from lsst_ts.library.utils.date_interval import DateInterval
 
 _app_route = "log_messages_app"
@@ -44,10 +41,10 @@ def initialize_app(server_information: ServerInformation, data_controller: DataC
 
     @server_information.flask_app.route(f'/{_messages_data_route}', methods=['GET'])
     async def log_messages():
-        edf_log_controller = EdfLogController(data_controller)
+        efd_log_controller = EfdLogController(data_controller)
         max_number_of_elements = request.args.get('n')
         if max_number_of_elements:
-            response = await edf_log_controller.get_logs_last_n(int(max_number_of_elements))
+            response = await efd_log_controller.get_logs_last_n(int(max_number_of_elements))
             response = [(index,) + tuple(r) for index, r in zip(response.index.to_numpy(), response.to_numpy())]
             return jsonify(response)
 
@@ -67,7 +64,7 @@ def initialize_app(server_information: ServerInformation, data_controller: DataC
         post_delta_hours = int(request.args.get('post_delta_days', 12))
         post_delta = timedelta(days=post_delta_days, hours=post_delta_hours)
         date_interval = DateInterval.from_central_date(begin_date, prev_delta, post_delta)
-        response = await edf_log_controller.get_logs_by_interval(date_interval)
+        response = await efd_log_controller.get_logs_by_interval(date_interval)
         response = [(index,)  + tuple(r) for index, r in zip(response.index.to_numpy(), response.to_numpy())]
         return jsonify(response)
 
@@ -93,7 +90,7 @@ if __name__ == '__main__':
     port = 5006
     app = Flask(__name__)
     information = ServerInformation(server_name, port, app)
-    edf_controller = EDFDataController("usdf_efd")
-    initialize_app(information, edf_controller)
+    efd_controller = EFDDataController("usdf_efd")
+    initialize_app(information, efd_controller)
     Thread(target=bk_worker, args=[information]).start()
     app.run(port=8000)
