@@ -7,7 +7,7 @@ from flask import render_template, Blueprint
 from jinja2 import Template, Environment, FileSystemLoader
 
 from lsst_ts.bokeh.main.server_information import ServerInformation
-from lsst_ts.library.data_controller.edf.data_controller import DataController
+from lsst_ts.library.data_controller.efd.data_controller import DataController
 
 def initialize_app(server_information: ServerInformation, data_controller: DataController):
     plot_selector_blueprint = Blueprint('plot_selector_blueprint', __name__, url_prefix="/plot_selector", static_folder="static", static_url_path='/plot_selector/static')

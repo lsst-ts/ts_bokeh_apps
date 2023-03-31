@@ -4,7 +4,7 @@ from flask import Flask, render_template, Blueprint
 from jinja2 import Environment, FileSystemLoader
 
 from lsst_ts.bokeh.main.server_information import ServerInformation
-from lsst_ts.library.data_controller.edf.data_controller import DataController
+from lsst_ts.library.data_controller.efd.data_controller import DataController
 
 app = Flask(__name__)
 

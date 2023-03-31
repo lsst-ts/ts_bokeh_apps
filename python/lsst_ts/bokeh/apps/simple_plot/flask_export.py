@@ -11,7 +11,7 @@ from bokeh.embed import components, json_item
 from bokeh.resources import INLINE
 
 from lsst_ts.bokeh.main.server_information import ServerInformation
-from lsst_ts.library.data_controller.edf.data_controller import DataController
+from lsst_ts.library.data_controller.efd.data_controller import DataController
 
 app = Flask(__name__)
 

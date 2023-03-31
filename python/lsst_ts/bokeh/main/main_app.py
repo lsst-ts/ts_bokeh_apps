@@ -77,12 +77,11 @@ if __name__ == '__main__':
     information.add_bokeh_allow_websocket_origin("172.16.20.8:5006")
     efd_controller = SimulatedDataController()
     # efd_controller =  EFDDataController("usdf_efd")
-    initialize_app(information, efd_controller)
     initialize_main_app(information)
     initialize_app(information, efd_controller)
     initialize_simple_plot(information, efd_controller)
-    # initialize_plot_selector(information, edf_controller)
-    initialize_react_plot_selector(information, efd_controller)
+    initialize_plot_selector(information, efd_controller)
+    # initialize_react_plot_selector(information, efd_controller)
     Thread(target=bk_worker, args=[information]).start()
 
     # run Flask all hosts and Port 8000
