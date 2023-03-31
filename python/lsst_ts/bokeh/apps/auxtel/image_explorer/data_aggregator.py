@@ -29,7 +29,7 @@ from bokeh.models import ColumnDataSource
 from lsst.rapid.analysis import BestEffortIsr
 from lsst.pipe.tasks.quickFrameMeasurement import QuickFrameMeasurementTask
 
-from lsst.ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
+from lsst_ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
 
 
 class DataAggregator(BaseDataAggregator):

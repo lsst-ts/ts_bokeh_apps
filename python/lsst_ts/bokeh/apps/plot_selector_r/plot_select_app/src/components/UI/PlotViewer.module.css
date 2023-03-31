@@ -1,0 +1,4 @@
+.plot_viewer  {
+    display: flex;
+    flex-wrap: wrap;
+}

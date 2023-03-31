@@ -21,7 +21,7 @@
 
 import logging
 
-from lsst.ts.bokeh.apps.auxtel.torques.interaction import Interaction
+from lsst_ts.bokeh.apps.auxtel.torques.interaction import Interaction
 
 
 Interaction()

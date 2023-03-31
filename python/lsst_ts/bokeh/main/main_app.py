@@ -12,6 +12,8 @@ from tornado.web import StaticFileHandler
 
 from lsst_ts.bokeh.apps.log_reader.flask_export import initialize_app
 from lsst_ts.bokeh.apps.simple_plot.flask_export import initialize_app as initialize_simple_plot
+from lsst_ts.bokeh.apps.plot_selector.flask_export import initialize_app as initialize_plot_selector
+from lsst_ts.bokeh.apps.plot_selector_r.flask_export import initialize_app as initialize_react_plot_selector
 from lsst_ts.bokeh.main.server_information import ServerInformation
 from lsst_ts.library.data_controller.edf.edf_data_controller import EDFDataController
 from lsst_ts.library.data_controller.edf.simulated_data_controller import SimulatedDataController
@@ -33,6 +35,7 @@ def initialize_main_app(flask_information: ServerInformation):
 def bk_worker(server_information: ServerInformation):
     # Can't pass num_procs > 1 in this configuration. If you need to run multiple
     # processes, see e.g. flask_gunicorn_embed.py
+    print("ok")
     static_patterns = [(r'/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps"))})] #for file in flask_information.static_path
     server = Server(server_information.applications, io_loop=IOLoop(), allow_websocket_origin=server_information.bokeh_allowed_websocket_origin, extra_patterns=static_patterns)
     server.start()
@@ -77,6 +80,8 @@ if __name__ == '__main__':
     # edf_controller =  EDFDataController("usdf_efd")
     initialize_app(information, edf_controller)
     initialize_simple_plot(information, edf_controller)
+    initialize_plot_selector(information, edf_controller)
+    # initialize_react_plot_selector(information, edf_controller)
     initialize_main_app(information)
     Thread(target=bk_worker, args=[information]).start()
 
