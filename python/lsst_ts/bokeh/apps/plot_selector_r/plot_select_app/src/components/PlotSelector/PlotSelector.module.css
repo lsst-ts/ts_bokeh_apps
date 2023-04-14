@@ -4,12 +4,12 @@
   vertical-align: middle;
   align-self: center;
   border-radius: 50%;
-  width: 200px;
-  height: 200px;
   background-image: linear-gradient(#d2d2d2, #d2d2d2), linear-gradient(#d2d2d2, #d2d2d2);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 20% 70%, 70% 20%;/* size it to a ratio(%) or static size (px, em, ..) */
   background-color: #505050;
   cursor: pointer;
+  width: 35%;
+  height: 62%;
 }

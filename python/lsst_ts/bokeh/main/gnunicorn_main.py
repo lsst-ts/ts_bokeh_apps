@@ -6,7 +6,7 @@ from threading import Thread
 from flask import Flask
 from flask_cors import CORS
 
-from lsst_ts.bokeh.apps.log_reader.flask_export import initialize_app
+from lsst_ts.bokeh.apps.log_reader.export import initialize_app
 from lsst_ts.bokeh.main.server_information import FlaskInformation
 from lsst_ts.bokeh.main.main_app import initialize_main_app, bk_worker_gnunicorn
 from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController

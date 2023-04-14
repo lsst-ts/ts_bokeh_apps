@@ -19,8 +19,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from lsst.ts.bokeh.apps.base_interaction import BaseInteraction
-from lsst.ts.bokeh.apps.auxtel.image_explorer.layout import Layout
+from lsst_ts.bokeh.apps.base_interaction import BaseInteraction
+from lsst_ts.bokeh.apps.auxtel.image_explorer.layout import Layout
 
 
 class Interaction(BaseInteraction):

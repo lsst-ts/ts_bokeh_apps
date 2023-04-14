@@ -35,6 +35,7 @@ class BaseInteraction(metaclass=abc.ABCMeta):
         self.page = None
         self.log = logging.getLogger(__name__)
         self.layout = layout
+        self.page = self.layout.get_page()
         self.setup_interaction()
 
     @abc.abstractmethod

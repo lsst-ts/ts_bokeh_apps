@@ -18,13 +18,18 @@ from lsst_ts.bokeh.main.server_information import ServerInformation
 from lsst_ts.library.controllers.efd_log_controller import EfdLogController
 from lsst_ts.library.data_controller.efd.data_controller import DataController
 from lsst_ts.library.data_controller.efd.efd_data_controller import EFDDataController
+from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController
 from lsst_ts.library.utils.date_interval import DateInterval
 
 _app_route = "log_messages_app"
 _messages_data_route = "log_messages"
 
 
-def initialize_app(server_information: ServerInformation, data_controller: DataController):
+def initialize_app(server_information: ServerInformation):
+
+    efd_controller = SimulatedDataController()
+    # efd_controller =  EFDDataController("usd_efd")
+    efd_log_controller = EfdLogController(efd_controller)
 
     def create_application(doc: Document):
         log_application = LogViewerApplication(doc)
@@ -41,7 +46,6 @@ def initialize_app(server_information: ServerInformation, data_controller: DataC
 
     @server_information.flask_app.route(f'/{_messages_data_route}', methods=['GET'])
     async def log_messages():
-        efd_log_controller = EfdLogController(data_controller)
         max_number_of_elements = request.args.get('n')
         if max_number_of_elements:
             response = await efd_log_controller.get_logs_last_n(int(max_number_of_elements))
@@ -90,7 +94,7 @@ if __name__ == '__main__':
     port = 5006
     app = Flask(__name__)
     information = ServerInformation(server_name, port, app)
-    efd_controller = EFDDataController("usdf_efd")
-    initialize_app(information, efd_controller)
+    _efd_controller = EFDDataController("usdf_efd")
+    initialize_app(information, _efd_controller)
     Thread(target=bk_worker, args=[information]).start()
     app.run(port=8000)

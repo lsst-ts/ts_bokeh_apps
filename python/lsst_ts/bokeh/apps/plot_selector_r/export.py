@@ -8,7 +8,7 @@ from lsst_ts.library.data_controller.efd.data_controller import DataController
 
 app = Flask(__name__)
 
-def initialize_app(server_information: ServerInformation, data_controller: DataController):
+def initialize_app(server_information: ServerInformation):
     plot_selector_react_blueprint = Blueprint('plot_selector_react_blueprint', __name__, url_prefix="/plot_selector",
                                         static_folder="plot_select_app/build/static", static_url_path="/plot_select_app/build/static")
 

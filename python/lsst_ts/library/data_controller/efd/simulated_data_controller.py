@@ -142,7 +142,7 @@ class SimulatedDataController(DataController):
         :param last_n:
         :return:
         """
-        information = self._dumped_log_information[:-1*last_n]
+        information = self._dumped_log_information[-1*last_n:]
         information = sorted(information, key=lambda x: x[1], reverse=True)
         df = pd.DataFrame(information, columns=["ScriptID", 'timestamp', 'salIndex', "message"])
         df.set_index('timestamp', inplace=True)

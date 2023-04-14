@@ -222,7 +222,7 @@ function initialize_scroll() {
     let element = document.getElementById('show_logger');
     element.onscroll = scroll_actions.update;
     scroll_actions.percentage = element.scrollTop / (element.scrollHeight - element.offsetHeight);
-    get_last_logs(100);
+    get_last_logs(5);
 };
 
 let data_sever_information = {

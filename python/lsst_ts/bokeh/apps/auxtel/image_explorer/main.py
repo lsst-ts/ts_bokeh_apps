@@ -21,7 +21,7 @@
 
 import logging
 
-from lsst.ts.bokeh.apps.auxtel.image_explorer.interaction import Interaction
+from lsst_ts.bokeh.apps.auxtel.image_explorer.interaction import Interaction
 
 
 Interaction()
