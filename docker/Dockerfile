@@ -24,4 +24,5 @@ RUN python3 setup.py install
 
 WORKDIR /home/$user
 COPY "entrypoint.sh" "entrypoint.sh"
-ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
+#ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
+CMD "/bin/bash"
