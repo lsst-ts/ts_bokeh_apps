@@ -110,8 +110,8 @@ if __name__ == '__main__':
     information.add_application_information("bokeh_server_host", bokeh_host)
     information.add_application_information("bokeh_server_port", bokeh_port)
 
-    information.add_allowed_websocket_origin("localhost:5006")
-    information.add_allowed_websocket_origin("172.16.20.8:5006")
+    information.add_allowed_websocket_origin("localhost:5057")
+    information.add_allowed_websocket_origin("172.16.20.8:5057")
     efd_controller = SimulatedDataController()
     # efd_controller =  EFDDataController("usd_efd")
     # initialize_main_app(information)
@@ -124,4 +124,4 @@ if __name__ == '__main__':
     Thread(target=bk_worker, args=[information]).start()
 
     # run Flask all hosts
-    flask_app.run(host=flask_host, port=flask_port)
+    flask_app.run(host='0.0.0.0', port=flask_port)
