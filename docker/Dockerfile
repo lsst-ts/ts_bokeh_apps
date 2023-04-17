@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
 RUN useradd --create-home $user
 USER $user
 WORKDIR /home/$user
-RUN git clone https://github.com/lsst-ts/ts_bokeh_apps -b
-
+RUN git clone https://github.com/lsst-ts/ts_bokeh_apps -b application_creation_improvement
+WORKDIR /home/$user/ts_bokeh_apps/
+RUN pip install -r requirements.txt
+RUN python3 setup.py install
 CMD "/bin/bash"
