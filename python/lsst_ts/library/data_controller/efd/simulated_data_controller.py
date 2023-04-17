@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from typing import List
 
 import pandas as pd
-from IPython.core.display_functions import display
 from pandas.core.interchange import dataframe
 
 from lsst_ts.library.data_controller.efd.data_controller import DataController
