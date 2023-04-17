@@ -1,7 +1,9 @@
 version: "1.0"
+name: bokeh_apps
 services:
-  web:
+  lsst_bokeh_apps:
     build: .
+    image: lsst_bokeh_apps
     ports:
       - "5056:8000"
       - "5057:5006"

@@ -70,7 +70,7 @@ def bk_worker_gnunicorn(flask_information: ServerInformation):
 
 class Configuration:
 
-    def __init__(self, configuration: Dict[str: Union[int, str]]):
+    def __init__(self, configuration: Dict[str, Union[int, str]]):
         self._configuration = configuration
     @staticmethod
     def from_yaml(config_file):
