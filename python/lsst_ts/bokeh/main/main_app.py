@@ -41,8 +41,7 @@ def bk_worker(server_information: ServerInformation):
     print(server_information.applications)
     print(os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps/examples")))
     print(f"Starting Server at port: {server_information.get_application_information('bokeh_server_port')}")
-    static_patterns = [(r'/examples_appexample_static_folder/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                                                                                                              "../apps/examples"))}),
+    static_patterns = [(r'/example_static_folder/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps/examples"))}),
                         (r'/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps"))})] #for file in flask_information.static_path
     server = Server(server_information.applications, io_loop=IOLoop(),
                                                     port=server_information.get_application_information("bokeh_server_port"),
@@ -111,16 +110,16 @@ if __name__ == '__main__':
     information.add_application_information("bokeh_server_port", bokeh_port)
 
     information.add_allowed_websocket_origin("localhost:5057")
-    information.add_allowed_websocket_origin("172.16.20.8:5057")
-    efd_controller = SimulatedDataController()
+    # information.add_allowed_websocket_origin("172.16.20.8:5057")
+    # efd_controller = SimulatedDataController()
     # efd_controller =  EFDDataController("usd_efd")
     # initialize_main_app(information)
     # initialize_app(information)
     # initialize_simple_plot(information)
-    # initialize_examples(information)
+    initialize_examples(information)
     # initialize_plot_selector(information)
     # initialize_interactive_example(information)
-    initialize_react_plot_selector(information)
+    # initialize_react_plot_selector(information)
     Thread(target=bk_worker, args=[information]).start()
 
     # run Flask all hosts
