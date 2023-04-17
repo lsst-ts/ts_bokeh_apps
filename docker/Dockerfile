@@ -2,8 +2,8 @@ FROM debian:11
 ARG user=lsst
 ENV VIRTUAL_ENV=/home/$user/venv
 
-EXPOSE 8000
-EXPOSE 5006
+EXPOSE 5056
+EXPOSE 5057
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
@@ -24,5 +24,5 @@ RUN python3 setup.py install
 
 WORKDIR /home/$user
 COPY "entrypoint.sh" "entrypoint.sh"
-#ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
-CMD "/bin/bash"
+COPY "configuration.yml" "configuration.yml"
+ENTRYPOINT ["/bin/bash", "entrypoint.sh", "/home/$user/configuration1.yml"]

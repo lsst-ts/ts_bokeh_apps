@@ -1,4 +1,9 @@
 import os
+import sys
+from typing import Dict, Union
+
+import yaml
+
 from threading import Thread
 
 from bokeh.document import Document
@@ -38,7 +43,10 @@ def bk_worker(server_information: ServerInformation):
     static_patterns = [(r'/examples_appexample_static_folder/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__),
                                                                                                                               "../apps/examples"))}),
                         (r'/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps"))})] #for file in flask_information.static_path
-    server = Server(server_information.applications, io_loop=IOLoop(), allow_websocket_origin=server_information.allowed_websocket_origin, extra_patterns=static_patterns)
+    server = Server(server_information.applications, io_loop=IOLoop(),
+                                                    port=server_information.get_application_information("bokeh_server_port"),
+                                                    allow_websocket_origin=server_information.allowed_websocket_origin,
+                                                    extra_patterns=static_patterns)
     server.start()
     server.io_loop.start()
 
@@ -60,31 +68,59 @@ def bk_worker_gnunicorn(flask_information: ServerInformation):
 #     server.start()
 #     server.io_loop.start()
 
+class Configuration:
+
+    def __init__(self, configuration: Dict[str: Union[int, str]]):
+        self._configuration = configuration
+    @staticmethod
+    def from_yaml(config_file):
+        if not os.path.isfile(config_file):
+            raise Exception(f"Configuration file: {config_file} not found")
+
+        with open(config_file, 'r') as f:
+            conf = yaml.load(f)
+        return Configuration(conf)
+    def get_bokeh_server_host(self):
+        return self._configuration["server"]["bokeh"]["host"]
+    def get_bokeh_server_port(self):
+        return self._configuration["server"]["bokeh"]["port"]
+    def get_flask_server_host(self):
+        return self._configuration["server"]["flask"]["host"]
+    def get_flask_server_port(self):
+        return self._configuration["server"]["flask"]["port"]
 
 if __name__ == '__main__':
     print('Opening single process Flask app with embedded Bokeh application on http://localhost:8000/')
     print()
     print('Multiple connections may block the Bokeh app in this configuration!')
     print('See "flask_gunicorn_embed.py" for one way to run multi-process')
-    bokeh_host = 'localhost'
-    bokeh_port = 5006
-    flask_host = "0.0.0.0" # All Interfaces
-    flask_port = 8000
+    configuration_file = sys.argv[1]
+    configuration = Configuration.from_yaml(configuration_file)
+
+
+    bokeh_host = configuration.get_bokeh_server_host()
+    bokeh_port = configuration.get_bokeh_server_port()
+    flask_host = configuration.get_flask_server_host()
+    flask_port = configuration.get_flask_server_port()
+
     flask_app = Flask(__name__)
     CORS(flask_app)
     information = ServerInformation(flask_app)
     # Host where server will be running, only valid localhost or 127.0.0.1 if
     # client will be running in the same computer as the server (very unlikely, but for test purposes is the case)
-    information.add_application_information("data_server_host", "127.0.0.1")
+    information.add_application_information("data_server_host", flask_host)
     information.add_application_information("data_server_port", flask_port)
+    information.add_application_information("bokeh_server_host", bokeh_host)
+    information.add_application_information("bokeh_server_port", bokeh_port)
+
     information.add_allowed_websocket_origin("localhost:5006")
     information.add_allowed_websocket_origin("172.16.20.8:5006")
     efd_controller = SimulatedDataController()
     # efd_controller =  EFDDataController("usd_efd")
-    initialize_main_app(information)
-    initialize_app(information)
+    # initialize_main_app(information)
+    # initialize_app(information)
     # initialize_simple_plot(information)
-    initialize_examples(information)
+    # initialize_examples(information)
     # initialize_plot_selector(information)
     # initialize_interactive_example(information)
     initialize_react_plot_selector(information)
