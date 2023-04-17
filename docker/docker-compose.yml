@@ -1,0 +1,7 @@
+version: "1.0"
+services:
+  web:
+    build: .
+    ports:
+      - "5056:5006"
+      - "5057:8000"

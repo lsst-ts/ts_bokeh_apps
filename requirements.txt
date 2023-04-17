@@ -7,3 +7,4 @@ pandas~=1.5.2
 requests~=2.28.1
 astropy~=5.1.1
 pytz~=2022.6
+nest-asyncio~=1.5.6
