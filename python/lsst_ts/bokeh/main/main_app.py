@@ -78,7 +78,7 @@ class Configuration:
             raise Exception(f"Configuration file: {config_file} not found")
 
         with open(config_file, 'r') as f:
-            conf = yaml.load(f)
+            conf = yaml.safe_load(f)
         return Configuration(conf)
     def get_bokeh_server_host(self):
         return self._configuration["server"]["bokeh"]["host"]
