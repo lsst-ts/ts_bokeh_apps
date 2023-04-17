@@ -5,5 +5,5 @@ services:
     build: .
     image: lsst_bokeh_apps
     ports:
-      - "5056:8000"
-      - "5057:5006"
+      - "5056:5056"
+      - "5057:5057"

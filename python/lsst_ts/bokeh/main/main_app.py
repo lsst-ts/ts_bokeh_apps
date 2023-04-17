@@ -40,6 +40,7 @@ def bk_worker(server_information: ServerInformation):
     # processes, see e.g. flask_gunicorn_embed.py
     print(server_information.applications)
     print(os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps/examples")))
+    print(f"Starting Server at port: {server_information.get_application_information('bokeh_server_port')}")
     static_patterns = [(r'/examples_appexample_static_folder/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__),
                                                                                                                               "../apps/examples"))}),
                         (r'/(.*)', StaticFileHandler, {'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps"))})] #for file in flask_information.static_path
@@ -90,10 +91,6 @@ class Configuration:
         return self._configuration["server"]["flask"]["port"]
 
 if __name__ == '__main__':
-    print('Opening single process Flask app with embedded Bokeh application on http://localhost:8000/')
-    print()
-    print('Multiple connections may block the Bokeh app in this configuration!')
-    print('See "flask_gunicorn_embed.py" for one way to run multi-process')
     configuration_file = sys.argv[1]
     configuration = Configuration.from_yaml(configuration_file)
 
