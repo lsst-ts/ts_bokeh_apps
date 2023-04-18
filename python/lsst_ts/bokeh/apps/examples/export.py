@@ -7,7 +7,7 @@ from lsst_ts.bokeh.apps.examples.flask_bokeh_full.export import initialize_app a
 from lsst_ts.bokeh.apps.examples.flask_react_simple.export import initialize_app as flask_react_simple_app
 
 
-def generate_examples_page(flask_host: str, bokeh_host: str):
+def generate_examples_page(bokeh_host: str, flask_host: str):
      return  f"<!doctype html>\
                     <html lang=\"en\">\
                     <head>\
