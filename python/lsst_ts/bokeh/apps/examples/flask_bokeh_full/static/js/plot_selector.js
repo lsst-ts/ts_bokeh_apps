@@ -16,12 +16,10 @@ const plotController = {
     },
 
     plus_click(element){
-        fetch("http://localhost:8000/examples/flask_bokeh_full/widget")
+        fetch("/examples/flask_bokeh_full/widget")
             .then((response) => response.json())
             .then((item) => {
-                console.log(element.className);
                 const box = element.getElementsByClassName("plot_box");
-                console.log(box[0].className)
                 element.style.justifyContent = "normal";
                 element.innerHTML = this.create_plot_code(element.className);
                 Bokeh.embed.embed_item(item, `plot_${element.className}`);

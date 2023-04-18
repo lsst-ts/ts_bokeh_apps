@@ -20,7 +20,6 @@ def initialize_app(server_information: ServerInformation):
         except Exception as ex:
             import traceback
             traceback.print_exc()
-            print(ex)
 
-    server_information.add_application("/examples_apps/bokeh_static", create_application)
+    server_information.add_application("/examples/bokeh_static", create_application)
     return server_information

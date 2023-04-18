@@ -16,7 +16,7 @@ const plotController = {
     },
 
     plus_click(element){
-        fetch("http://localhost:8000/examples/flask_embedding_bokeh_example/one_variable")
+        fetch("/examples/flask_embedding_bokeh_example/one_variable")
             .then((response) => response.json())
             .then((item) => {
                 console.log(element.className);

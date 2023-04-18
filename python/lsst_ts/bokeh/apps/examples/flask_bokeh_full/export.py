@@ -30,13 +30,10 @@ def initialize_app(server_information: ServerInformation):
         index_template = env.get_template("templates/index.html")
         return render_template(index_template)
 
-
     @flask_embedding_full_example_blueprint.route("/widget", methods=['GET'])
     def flask_bokeh_full__widget():
         #streaming = True
-        host = server_information.get_application_information("data_server_host")
-        port = server_information.get_application_information("data_server_port")
-        source = AjaxDataSource(data_url=f'http://{host}:{port}/examples/flask_bokeh_full/data',
+        source = AjaxDataSource(data_url=f'/examples/flask_bokeh_full/data',
                                 polling_interval=1000, mode='append')
 
         source.data = dict(x=[], y=[])

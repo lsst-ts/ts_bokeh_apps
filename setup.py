@@ -16,7 +16,7 @@ setup(
     setup_requires=["setuptools_scm"],
     package_dir={"": "python"},
     packages=find_namespace_packages(where="python"),
-    package_data={"": ["*.rst", "*.yaml"]},
+    package_data={"": ["*.rst", "*.yaml", "*.html", "*.css", "*.js", "*.svg"]},
     scripts=[],
     license="GPL",
     project_urls={

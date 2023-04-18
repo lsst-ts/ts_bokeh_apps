@@ -37,9 +37,10 @@ def initialize_app(server_information: ServerInformation):
         env = Environment(loader=FileSystemLoader(template_dir))
         index_template = env.get_template("templates/index.html")
         doc.title = "Log Reader"
-        doc.template_variables["data_server_host"] = server_information.get_application_information("data_server_host")
-        doc.template_variables["data_server_port"] = server_information.get_application_information("data_server_port")
+        doc.template_variables["data_server_host"] = server_information.get_application_information("flask_server_host")
+        doc.template_variables["data_server_port"] = server_information.get_application_information("flask_server_port")
         log_application.deploy()
+        index_template.render()
         doc.template = index_template
 
     server_information.add_application(f"/{_app_route}", create_application)

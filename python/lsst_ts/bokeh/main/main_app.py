@@ -22,17 +22,21 @@ from lsst_ts.bokeh.main.server_information import ServerInformation
 from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController
 
 
-def initialize_main_app(flask_information: ServerInformation):
+def initialize_main_app(server_information: ServerInformation):
 
     def create_application(doc: Document):
         template_dir = os.path.normpath(os.path.dirname(__file__))
         env = Environment(loader=FileSystemLoader(template_dir))
         index_template = env.get_template("templates/index.html")
+        doc.template_variables["data_server_host"] = server_information.get_application_information("flask_server_host")
+        doc.template_variables["data_server_port"] = server_information.get_application_information("flask_server_port")
+        index_template.render()
         doc.template = index_template
 
-    flask_information.add_application("/", create_application)
 
-    return flask_information
+    server_information.add_application("/", create_application)
+
+    return server_information
 
 
 def bk_worker(server_information: ServerInformation):
@@ -80,13 +84,13 @@ class Configuration:
         with open(config_file, 'r') as f:
             conf = yaml.safe_load(f)
         return Configuration(conf)
-    def get_bokeh_server_host(self):
-        return self._configuration["server"]["bokeh"]["host"]
-    def get_bokeh_server_port(self):
+    def get_bokeh_connection(self):
+        return self._configuration["server"]["bokeh"]["connection_host"]
+    def get_bokeh_port(self):
         return self._configuration["server"]["bokeh"]["port"]
-    def get_flask_server_host(self):
-        return self._configuration["server"]["flask"]["host"]
-    def get_flask_server_port(self):
+    def get_flask_connection(self):
+        return self._configuration["server"]["flask"]["connection_host"]
+    def get_flask_port(self):
         return self._configuration["server"]["flask"]["port"]
 
 if __name__ == '__main__':
@@ -94,26 +98,24 @@ if __name__ == '__main__':
     configuration = Configuration.from_yaml(configuration_file)
 
 
-    bokeh_host = configuration.get_bokeh_server_host()
-    bokeh_port = configuration.get_bokeh_server_port()
-    flask_host = configuration.get_flask_server_host()
-    flask_port = configuration.get_flask_server_port()
+    bokeh_host = configuration.get_bokeh_connection()
+    bokeh_port = configuration.get_bokeh_port()
+    flask_host = configuration.get_flask_connection()
+    flask_port = configuration.get_flask_port()
 
     flask_app = Flask(__name__)
     CORS(flask_app)
     information = ServerInformation(flask_app)
     # Host where server will be running, only valid localhost or 127.0.0.1 if
     # client will be running in the same computer as the server (very unlikely, but for test purposes is the case)
-    information.add_application_information("data_server_host", flask_host)
-    information.add_application_information("data_server_port", flask_port)
-    information.add_application_information("bokeh_server_host", bokeh_host)
-    information.add_application_information("bokeh_server_port", bokeh_port)
+    information.add_application_information("flask_connection_server", flask_host)
+    information.add_application_information("bokeh_connection_server", bokeh_host)
 
     information.add_allowed_websocket_origin("localhost:5057")
     # information.add_allowed_websocket_origin("172.16.20.8:5057")
     # efd_controller = SimulatedDataController()
     # efd_controller =  EFDDataController("usd_efd")
-    # initialize_main_app(information)
+    initialize_main_app(information)
     # initialize_app(information)
     # initialize_simple_plot(information)
     initialize_examples(information)

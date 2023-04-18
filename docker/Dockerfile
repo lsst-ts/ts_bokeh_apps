@@ -17,14 +17,18 @@ SHELL ["/bin/bash", "-c"]
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN git clone https://github.com/lsst-ts/ts_bokeh_apps -b application_creation_improvement
+#RUN git clone https://github.com/lsst-ts/ts_bokeh_apps -b application_creation_improvement
+
 WORKDIR /home/$USER/ts_bokeh_apps/
+RUN mkdir ts_bokeh_apps
+COPY  ts_bokeh_apps/ .
 RUN pip install -r requirements.txt
 RUN python3 setup.py install
 
 WORKDIR /home/$USER
-COPY "entrypoint.sh" "entrypoint.sh"
-COPY "configuration.yml" "configuration.yml"
+
+COPY "ts_bokeh_apps/docker/entrypoint.sh" "entrypoint.sh"
+COPY "ts_bokeh_apps/docker/configuration.yml" "configuration.yml"
 
 ENV CUSTOM_USER=$USER
 
