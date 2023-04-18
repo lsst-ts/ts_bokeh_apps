@@ -110,6 +110,7 @@ if __name__ == '__main__':
     # client will be running in the same computer as the server (very unlikely, but for test purposes is the case)
     information.add_application_information("flask_connection_server", flask_host)
     information.add_application_information("bokeh_connection_server", bokeh_host)
+    information.add_application_information("bokeh_server_port", bokeh_port)
 
     information.add_allowed_websocket_origin("localhost:5057")
     # information.add_allowed_websocket_origin("172.16.20.8:5057")
