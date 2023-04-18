@@ -28,8 +28,7 @@ def initialize_main_app(server_information: ServerInformation):
         template_dir = os.path.normpath(os.path.dirname(__file__))
         env = Environment(loader=FileSystemLoader(template_dir))
         index_template = env.get_template("templates/index.html")
-        doc.template_variables["data_server_host"] = server_information.get_application_information("flask_server_host")
-        doc.template_variables["data_server_port"] = server_information.get_application_information("flask_server_port")
+        doc.template_variables["flask_server_connection"] = server_information.get_application_information("flask_connection_server")
         index_template.render()
         doc.template = index_template
 
