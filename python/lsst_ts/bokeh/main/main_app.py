@@ -97,9 +97,9 @@ if __name__ == '__main__':
     configuration = Configuration.from_yaml(configuration_file)
 
 
-    bokeh_host = configuration.get_bokeh_connection()
+    bokeh_connection_host = configuration.get_bokeh_connection()
     bokeh_port = configuration.get_bokeh_port()
-    flask_host = configuration.get_flask_connection()
+    flask_connection_host = configuration.get_flask_connection()
     flask_port = configuration.get_flask_port()
 
     flask_app = Flask(__name__)
@@ -107,8 +107,8 @@ if __name__ == '__main__':
     information = ServerInformation(flask_app)
     # Host where server will be running, only valid localhost or 127.0.0.1 if
     # client will be running in the same computer as the server (very unlikely, but for test purposes is the case)
-    information.add_application_information("flask_connection_server", flask_host)
-    information.add_application_information("bokeh_connection_server", bokeh_host)
+    information.add_application_information("flask_connection_server", flask_connection_host)
+    information.add_application_information("bokeh_connection_server", bokeh_connection_host)
     information.add_application_information("bokeh_server_port", bokeh_port)
 
     information.add_allowed_websocket_origin("localhost:5057")

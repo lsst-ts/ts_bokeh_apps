@@ -1,7 +1,7 @@
 server:
   bokeh:
-    connection_host: localhost:5057
+    connection_host: http://localhost:5057
     port: 5055
   flask:
-    connection_host: localhost:5056
+    connection_host: http://localhost:5056
     port: 5054
