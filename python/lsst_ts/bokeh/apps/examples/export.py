@@ -4,7 +4,8 @@ from lsst_ts.bokeh.apps.examples.bokeh_static.export import initialize_app as bo
 from lsst_ts.bokeh.apps.examples.flask_raw.export import initialize_app as flask_raw_example_initialize_app
 from lsst_ts.bokeh.apps.examples.flask_embedding_bokeh.export import initialize_app as flask_embedding_bokeh_initialize_app
 from lsst_ts.bokeh.apps.examples.flask_bokeh_full.export import initialize_app as flask_full_example_initialize_app
-from lsst_ts.bokeh.apps.examples.flask_react_simple.export import initialize_app as flask_react_simple_app
+from lsst_ts.bokeh.apps.examples.flask_react_simple.export import initialize_app as flask_react_simple_example_initialize_app
+from lsst_ts.bokeh.apps.examples.plot2D.export import initialize_app as plot2d_initialize_app
 
 
 def generate_examples_page(bokeh_host: str, flask_host: str):
@@ -40,4 +41,5 @@ def initialize_app(server_information: ServerInformation):
     flask_raw_example_initialize_app(server_information)
     flask_embedding_bokeh_initialize_app(server_information)
     flask_full_example_initialize_app(server_information)
-    flask_react_simple_app(server_information)
+    flask_react_simple_example_initialize_app(server_information)
+    plot2d_initialize_app(server_information)

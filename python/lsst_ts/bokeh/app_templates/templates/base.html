@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="/app_templates/static/css/style.css"/>
+    <title>{% block title %}{% endblock %} - My Webpage</title>
+    {% endblock %}
+</head>
+<body>
+<div class="outer-div">
+    <div class="inner-div">
+         <img src="/app_templates/static/vera_rubin_logo.png" alt="Flowers in Chania">
+        <div id="content">{% block content %}{% endblock %}</div>
+    </div>
+</div>
+<div id="footer">
+    {% block footer %}
+    &copy; Copyright 2008 by <a href="http://domain.invalid/">you</a>.
+    {% endblock %}
+</div>
+</body>
+</html>

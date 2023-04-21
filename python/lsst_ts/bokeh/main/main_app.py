@@ -14,11 +14,12 @@ from jinja2 import Environment, FileSystemLoader
 from tornado.ioloop import IOLoop
 from tornado.web import StaticFileHandler
 
+from lsst_ts.bokeh.app_templates.export import initialize_apps as initialize_apps_templates
 from lsst_ts.bokeh.apps.examples.export import initialize_app as initialize_examples
 from lsst_ts.bokeh.apps.log_reader.export import initialize_app
 from lsst_ts.bokeh.apps.plot_selector_r.export import initialize_app as initialize_react_plot_selector
 from lsst_ts.bokeh.main.server_information import ServerInformation
-#from lsst_ts.library.data_controller.efd.efd_data_controller import EFDDataController
+# from lsst_ts.library.data_controller.efd.efd_data_controller import EFDDataController
 from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController
 
 
@@ -115,6 +116,7 @@ if __name__ == '__main__':
     # information.add_allowed_websocket_origin("172.16.20.8:5057")
     # efd_controller = SimulatedDataController()
     # efd_controller =  EFDDataController("usd_efd")
+    initialize_apps_templates(information)
     initialize_main_app(information)
     # initialize_app(information)
     # initialize_simple_plot(information)
