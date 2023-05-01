@@ -18,7 +18,7 @@
                 <button class="advance_btn" onclick="advance_log_info()"><i class="arrow down"></i></button>
             </div>
             <div class="item_3_1">
-                <button class="rewind_btn"  onclick="rewind_log_info()"> <i class="arrow up"></i></button>
+                <button class="rewind_btn" onclick="rewind_log_info()"><i class="arrow up"></i></button>
             </div>
             <div class="item_3_3">
                 <div id='show_logger' style="height: 750px; overflow-y:auto;">
@@ -30,7 +30,7 @@
 </div>
 <script src='log_reader/static/js/log_reader_actions.js'></script>
 <script type="text/javascript">
-    window.onload = function(){
+    window.onload = function () {
         data_sever_information.set_host("{{ data_server_host | safe }}");
         data_sever_information.set_port("{{ data_server_port | safe }}");
         initialize_scroll();

@@ -1,4 +1,2 @@
-
 class LogViewerScrollable:
-
     pass

@@ -1,82 +1,85 @@
-from typing import Protocol, Generic, TypeVar, Callable
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Callable, TypeVar, Generic, List  # noqa: F401
 
 __all__ = ['Observable']
 
 T = TypeVar("T", contravariant=True)
 
-class Observer(Protocol[T]):
 
-    def notify(self, emitter: "Observable", value: T) -> None:
+class Observer(Generic[T]):
+
+    def notify(self, emitter: 'Observable[T]', value: T) -> None:
         raise NotImplementedError()
 
 
 class Observable(Generic[T]):
     """
     """
-    def __init__(self):
-        self._observe_callbacks = []
-        self._observers = []
+    def __init__(self) -> None:
+        self._observe_callbacks = []  # type: List[Callable[[Observable[T], T], None]]
+        self._observers = []  # type: List[Observer[T]]
 
-    def attach(self, observer: Observer[T]):
+    def attach(self, observer: Observer[T]) -> None:
         """
         :param observer:
         :return:
         """
         self._observers.append(observer)
 
-    def attach_callable(self, function: Callable[[T], None]):
+    def attach_callable(self, function: 'Callable[[Observable[T], T], None]') -> None:
         """
         :param function:
         :return:
         """
         self._observe_callbacks.append(function)
 
-    def detach_callable(self, function: Callable[[T], None]):
+    def detach_callable(self, function: 'Callable[[Observable[T], T], None]') -> None:
         """
         :param function:
         :return:
         """
-        self._observers.remove(function)
+        self._observe_callbacks.remove(function)
 
-    def detach(self, observer: Observer[T]):
+    def detach(self, observer: 'Observer[T]') -> None:
         """
         :param observer:
         :return:
         """
         self._observers.remove(observer)
 
-    def _notify(self, value: object):
+    def _notify(self, value: T) -> None:
         """
         :param value:
         :return:
         """
         for observer in self._observers:
             observer.notify(self, value)
-        for observer in self._observe_callbacks:
-            observer(value)
+        for observer_callback in self._observe_callbacks:
+            observer_callback(self, value)
 
 
 if __name__ == "__main__":
-    class MyObservable(Observable[str]):
+    class MyObservable('Observable[str]'):
         pass
 
+    class Obs(Observer[str]):
 
-    class Obs:
-
-        def __init__(self):
+        def __init__(self) -> None:
             super(Obs, self).__init__()
 
-        def notify(self, emitter: "Observable", value: str):
+        def notify(self, emitter: 'Observable[T]', value: str) -> None:
             print("value")
 
     class MyObs:
 
-        def __init__(self):
-            super(Obs, self).__init__()
+        def __init__(self) -> None:
+            super().__init__()
 
-        def notify(self, emitter: "Observable", value: int):
+        def notify(self, emitter: 'Observable[T]', value: int) -> None:
             print("value")
 
     o = MyObservable()
     o.attach(Obs())
-    o.attach_callable(MyObs().notify)
+    o.attach_callable(Obs().notify)

@@ -18,23 +18,29 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+from typing import TYPE_CHECKING
+
+from bokeh.events import Event
 from bokeh.model import Model
+
+if TYPE_CHECKING:
+    from lsst_ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
 
 
 class Interaction:
 
-    def __init__(self, data_aggregator):
+    def __init__(self, data_aggregator: BaseDataAggregator) -> None:
         self._data_aggregator = data_aggregator
 
-    def setup_interaction(self, layout: Model):
+    def setup_interaction(self, layout: Model) -> None:
         dropdown = layout.children[0].children[0]
         button = layout.children[0].children[1]
 
         dropdown.on_click(self.drop_down_callback)
         button.on_click(self.on_click_callback)
 
-    def on_click_callback(self):
+    def on_click_callback(self) -> None:
         self._data_aggregator.retrieve_data()
 
-    def drop_down_callback(self, event):
+    def drop_down_callback(self, event: Event) -> None:
         self._data_aggregator.retrieve_data()

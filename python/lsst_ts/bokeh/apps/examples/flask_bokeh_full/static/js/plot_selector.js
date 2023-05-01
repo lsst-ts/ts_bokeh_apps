@@ -1,4 +1,3 @@
-
 const plotController = {
     _menu_mouse_over() {
         document.getElementById("plot_menu").style.width = "5%";
@@ -15,7 +14,7 @@ const plotController = {
         return plot_code;
     },
 
-    plus_click(element){
+    plus_click(element) {
         fetch("/examples/flask_bokeh_full/widget")
             .then((response) => response.json())
             .then((item) => {
@@ -25,10 +24,12 @@ const plotController = {
                 Bokeh.embed.embed_item(item, `plot_${element.className}`);
             });
     },
-        linked_element: "",
-    create_plot_link(){
+    linked_element: "",
+    create_plot_link() {
         const plus_element = this.linked_element.getElementsByClassName("plus");
-        plus_element[0].addEventListener('click', () => {this.plus_click(this.linked_element)});
+        plus_element[0].addEventListener('click', () => {
+            this.plus_click(this.linked_element)
+        });
     }
 }
 

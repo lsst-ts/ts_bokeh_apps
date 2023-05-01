@@ -4,13 +4,14 @@ from typing import Union
 
 import pytz
 
+
 @dataclass(frozen=True)
 class DateInterval:
     begin: datetime
     end: datetime
 
     @staticmethod
-    def from_date(begin_date:  Union[date, datetime], end_date: Union[datetime, timedelta]) -> 'DateInterval':
+    def from_date(begin_date: Union[date, datetime], end_date: Union[datetime, timedelta]) -> 'DateInterval':
         """
         Create a Date Interval out of a date
         :param begin_date: begin date for the interval
@@ -22,11 +23,12 @@ class DateInterval:
         if isinstance(end_date, timedelta):
             end_date = begin_date + end_date
         if begin_date > end_date:
-            begin_date , end_date = end_date, begin_date
+            begin_date, end_date = end_date, begin_date
         return DateInterval(begin_date, end_date)
 
     @staticmethod
-    def from_central_date(begin_date: Union[date, datetime], previous_date: timedelta, post_date: timedelta) -> 'DateInterval':
+    def from_central_date(begin_date: datetime, previous_date: timedelta,
+                          post_date: timedelta) -> 'DateInterval':
         """
         :param begin_date:
         :param previous_date:
@@ -47,7 +49,7 @@ class DateInterval:
 
 
 if __name__ == "__main__":
-    date_interval = DateInterval.from_date(datetime.today(), timedelta(hours = -12))
+    date_interval = DateInterval.from_date(datetime.today(), timedelta(hours=-12))
     print(date_interval)
     new_date = date_interval.begin
     print(new_date)

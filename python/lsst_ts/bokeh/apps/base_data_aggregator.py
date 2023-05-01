@@ -37,9 +37,7 @@ class BaseDataAggregator(metaclass=abc.ABCMeta):
 
     def __init__(self) -> None:
         self.log = logging.getLogger(__name__)
-        self.data_sources = dict()
 
-    @abc.abstractmethod
     def initialize_data_sources(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         """Method to initialize data sources."""
         raise NotImplementedError()

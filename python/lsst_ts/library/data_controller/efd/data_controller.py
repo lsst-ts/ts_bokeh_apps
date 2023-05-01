@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import List
 
-from pandas.core.interchange import dataframe
+from pandas import DataFrame
 
 from lsst_ts.library.utils.date_interval import DateInterval
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import List
 
 
 class DataController(ABC):
@@ -17,13 +21,15 @@ class DataController(ABC):
         pass
 
     @abstractmethod
-    async def select_top_n(self, topic: str, fields: List[str], last_n: int) -> dataframe:
+    async def select_top_n(self, topic: str, fields: List[str], last_n: int) -> 'DataFrame':
         pass
 
     @abstractmethod
-    async def select_interval(self, topic: str, fields: List[str], date_interval: DateInterval) -> dataframe:
+    async def select_interval(self, topic: str, fields: List[str],
+                              date_interval: DateInterval) -> 'DataFrame':
         pass
 
     @abstractmethod
-    async def select_packed_interval(self, topic: str, fields: List[str], date_interval: DateInterval) -> dataframe:
+    async def select_packed_interval(self, topic: str, fields: List[str],
+                                     date_interval: DateInterval) -> 'DataFrame':
         pass

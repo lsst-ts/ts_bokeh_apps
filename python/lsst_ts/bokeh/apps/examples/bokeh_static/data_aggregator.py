@@ -18,25 +18,31 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+from itertools import chain
+from typing import Dict, Union, Sequence, List, Any
 
 import numpy
 import asyncio
 
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import RdYlBu3
+from numpy import ndarray, dtype
 
-from lsst_ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
+
+def concat(a: Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any],
+           b: Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any]) -> List[Any]:
+    return list(chain(a, b))
 
 
 class DataAggregator:
     """Data aggregator class for the app."""
 
-    def __init__(self):
-        self._data_sources = {}
-        self._iterator = 0
+    def __init__(self) -> None:
+        self._data_sources = {}  # type: Dict[str, ColumnDataSource]
+        self._iterator = 0  # type: int
         self._initialize_data_sources()
 
-    def _initialize_data_sources(self, *args, **kwargs):
+    def _initialize_data_sources(self) -> None:
         """Initialize data sources."""
 
         self._data_sources["column_data_source"] = ColumnDataSource(
@@ -49,24 +55,28 @@ class DataAggregator:
         )
 
     @property
-    def data_sources(self):
+    def data_sources(self) -> Dict[str, ColumnDataSource]:
         return self._data_sources
 
-    async def _retrieve_data_async(self):
+    async def _retrieve_data_async(self) -> None:
         """
         Testing async methods in apps.
         """
-        new_data = dict()
-        new_data["x"] = self._data_sources["column_data_source"].data["x"] + [numpy.random.random() * 70 + 15]
-        new_data["y"] = self._data_sources["column_data_source"].data["y"] + [numpy.random.random() * 70 + 15]
-        new_data["text_color"] = self._data_sources["column_data_source"].data["text_color"] + [RdYlBu3[self._iterator % 3]]
-        new_data["text"] = self._data_sources["column_data_source"].data["text"] + [str(self._iterator)]
+        new_data = dict()  # type: Dict[str, Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any]]
+        new_data["x"] = concat(self._data_sources["column_data_source"].data["x"],
+                               [numpy.random.random() * 70 + 15])
+        new_data["y"] = concat(self._data_sources["column_data_source"].data["y"],
+                               [numpy.random.random() * 70 + 15])
+        new_data["text_color"] = concat(self._data_sources["column_data_source"].data["text_color"],
+                                        [RdYlBu3[self._iterator % 3]])
+        new_data["text"] = concat(self._data_sources["column_data_source"].data["text"],
+                                  [str(self._iterator)])
         self._data_sources["column_data_source"].data = new_data
 
         self._iterator += 1
 
         print("Data generated....")
 
-    def retrieve_data(self, *args, **kwargs):
+    def retrieve_data(self) -> None:
         """Retrive data."""
         asyncio.run(self._retrieve_data_async())

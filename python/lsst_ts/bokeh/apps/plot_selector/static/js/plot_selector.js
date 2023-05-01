@@ -1,4 +1,3 @@
-
 const plotController = {
     _menu_mouse_over: () => {
         document.getElementById("plot_menu").style.width = "5%";
@@ -22,7 +21,7 @@ const plotController = {
                 Bokeh.embed.embed_item(item, "plot");
             });
     },
-    create_plot_link : () => {
+    create_plot_link: () => {
         const global_parent = document.getElementById(this.link_id);
         global_parent.onclick = this.plus_click;
     },

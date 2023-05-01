@@ -1,10 +1,13 @@
-from typing import List
-
 from astropy.time import Time
 from lsst_efd_client import EfdClient
-from pandas.core.interchange import dataframe
+from pandas import DataFrame
 
 from lsst_ts.library.utils.date_interval import DateInterval
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import List, cast
 
 
 class EFDDataController:
@@ -17,22 +20,32 @@ class EFDDataController:
 
     async def get_topic_available(self) -> List[str]:
         efd = EfdClient(self._efd_client)
-        return await efd.get_topics()
+        topics = await efd.get_topics()
+        topics_cast = cast(List[str], topics)
+        return topics_cast
 
     async def get_fields_available(self, topic: str) -> List[str]:
         efd = EfdClient(self._efd_client)
-        return await efd.get_fields(topic)
+        fields = await efd.get_fields(topic)
+        fields_cast = cast(List[str], fields)
+        return fields_cast
 
-    async def select_top_n(self, topic: str, fields: List[str], last_n: int) -> dataframe:
+    async def select_top_n(self, topic: str, fields: List[str], last_n: int) -> 'DataFrame':
         efd = EfdClient(self._efd_client)
         return await efd.select_top_n(topic, fields, last_n)
 
-    async def select_interval(self, topic: str, fields: List[str], date_interval: DateInterval) -> dataframe:
+    async def select_interval(self, topic: str, fields: List[str],
+                              date_interval: DateInterval) -> 'DataFrame':
         efd = EfdClient(self._efd_client)
         begin_time, end_time = Time([date_interval.begin, date_interval.end], format='datetime', scale='utc')
-        return await efd.select_time_series(topic, fields, begin_time, end_time)
+        values = await efd.select_time_series(topic, fields, begin_time, end_time)
+        values_cast = cast(DataFrame, values)
+        return values_cast
 
-    async def select_packed_interval(self, topic: str, fields: List[str], date_interval: DateInterval) -> dataframe:
+    async def select_packed_interval(self, topic: str, fields: List[str],
+                                     date_interval: DateInterval) -> 'DataFrame':
+        efd = EfdClient(self._efd_client)
         begin_time, end_time = Time([date_interval.begin, date_interval.end], format='datetime', scale='utc')
-        return self._efd.select_packed_time_series(topic, fields, begin_time, end_time)
-
+        values = efd.select_packed_time_series(topic, fields, begin_time, end_time)
+        values_cast = cast(DataFrame, values)
+        return values_cast

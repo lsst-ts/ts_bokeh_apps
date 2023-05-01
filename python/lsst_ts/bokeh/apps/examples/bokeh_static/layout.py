@@ -22,7 +22,7 @@ from bokeh.document import Document
 from bokeh.model import Model
 from bokeh.plotting import figure
 from bokeh.layouts import column, row
-from bokeh.models import Button, CustomJS, Dropdown
+from bokeh.models import Button, CustomJS, Dropdown  # type: ignore
 
 from lsst_ts.bokeh.apps.examples.bokeh_raw.data_aggregator import DataAggregator
 from lsst_ts.bokeh.apps.examples.bokeh_raw.interaction import Interaction
@@ -31,20 +31,26 @@ from lsst_ts.bokeh.apps.examples.bokeh_raw.interaction import Interaction
 class Layout:
     """
     """
+
     def __init__(self) -> None:
         self._data_aggregator = DataAggregator()
         self._interaction = Interaction(self._data_aggregator)
 
-    def create(self, doc: Document):
+    def create(self, doc: Document) -> None:
         layout = self._create_layout()
         self._interaction.setup_interaction(layout)
         doc.add_root(layout)
 
     def _create_layout(self) -> Model:
-        p = figure(x_range=(0, 100), y_range=(0, 100), toolbar_location=None)
-        p.border_fill_color = "black"
-        p.background_fill_color = "black"
-        p.outline_line_color = None
+        """
+        :return:
+        """
+        p = figure(border_fill_color= "black",
+                   background_fill_color= "black",
+                   outline_line_color= "blue",
+                   toolbar_location=None,
+                   x_range=(0, 100),
+                   y_range=(0, 100))
         p.grid.grid_line_color = None
 
         r = p.text(
@@ -71,4 +77,4 @@ class Layout:
             CustomJS(code="console.log('dropdown: ' + this.item, this.toString())"),
         )
 
-        return column(name = "bokeh_component", children=[row(dropdown, button), p])
+        return column(name="bokeh_component", children=[row(children=[dropdown, button]), p])

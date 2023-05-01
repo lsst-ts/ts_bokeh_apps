@@ -23,14 +23,18 @@ __all__ = ["BaseLayout"]
 
 import abc
 import logging
+from typing import TYPE_CHECKING
 
 from bokeh.models import LayoutDOM
+
+if TYPE_CHECKING:
+    from lsst_ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
 
 
 class BaseLayout(metaclass=abc.ABCMeta):
     """Base layout class for building bokeh apps."""
 
-    def __init__(self, data_aggregator) -> None:
+    def __init__(self, data_aggregator: 'BaseDataAggregator') -> None:
 
         self.log = logging.getLogger(__name__)
 

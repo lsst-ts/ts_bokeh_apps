@@ -24,6 +24,7 @@ __all__ = ["BaseInteraction"]
 import abc
 import logging
 
+from bokeh.document import Document
 from bokeh.plotting import curdoc
 from .base_layout import BaseLayout
 
@@ -47,6 +48,6 @@ class BaseInteraction(metaclass=abc.ABCMeta):
         self.doc = curdoc()
         self.doc.add_root(self.page)
 
-    def modify_doc(self, doc) -> None:
+    def modify_doc(self, doc: Document) -> None:
         self.page = self.layout.get_page()
         doc.add_root(self.page)

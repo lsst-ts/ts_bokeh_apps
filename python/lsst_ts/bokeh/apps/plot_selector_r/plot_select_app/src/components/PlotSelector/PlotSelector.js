@@ -1,4 +1,3 @@
-
 import classes from './PlotSelector.module.css'
 import PlotCard from "../UI/PlotCard";
 
