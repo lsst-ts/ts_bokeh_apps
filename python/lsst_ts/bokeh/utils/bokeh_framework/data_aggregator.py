@@ -2,9 +2,12 @@ import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from lsst_ts.library.bokeh_framework.layout import Layout
+from lsst_ts.library.utils.logger import get_logger
 
+if TYPE_CHECKING:
+    from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
+
+_log = get_logger("bokeh_framework.data_aggregator")
 
 class DataAggregator(ABC):
 
@@ -32,4 +35,4 @@ class VoidDataAggregator(DataAggregator):
         :param layout:
         :return:
         """
-        logging.warning("No definition of Data Aggregation Available")
+        _log.warning("No definition of Data Aggregation Available")

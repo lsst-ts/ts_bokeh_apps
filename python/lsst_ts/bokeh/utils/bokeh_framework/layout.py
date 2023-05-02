@@ -7,6 +7,9 @@ from lsst_ts.bokeh.utils.bokeh_framework.data_aggregator import DataAggregator, 
 from lsst_ts.bokeh.utils.bokeh_framework.interaction import Interaction, VoidInteraction
 
 from typing import TYPE_CHECKING
+
+from lsst_ts.library.utils.logger import get_logger
+
 if TYPE_CHECKING:
     from bokeh.models import UIElement  # type: ignore
     from bokeh.document import Document
@@ -14,6 +17,7 @@ if TYPE_CHECKING:
 # T = TypeVar('T', bound='DataAggregator')
 # I = TypeVar('I', bound=Interaction)
 
+_log = get_logger("bokeh_framework.layout")
 
 class Layout(ABC):
 
@@ -43,9 +47,9 @@ class Layout(ABC):
         :return:
         """
         ui_element = self.define()
-        logging.info("Creating Application Interaction")
+        _log.info("Setting up Application Interaction")
         self._interaction.setup(self)
-        logging.info("Aggregating Data")
+        _log.info("Setting up Data")
         self._data_aggregator.setup(self)
         return ui_element
 
@@ -55,6 +59,7 @@ class Layout(ABC):
         :param doc: Bokeh document where the bokeh application will be deployed
         :return: None
         """
+        _log.info("Deploying application")
         element = self.create()
         doc.add_root(element)
 
@@ -65,6 +70,7 @@ class Layout(ABC):
         the notebook where application will be shown (No interaction available)
         :return: None
         """
+        _log.info("Showing application")
         element = self.create()
         show(element, notebook_url=notebook_url)
 

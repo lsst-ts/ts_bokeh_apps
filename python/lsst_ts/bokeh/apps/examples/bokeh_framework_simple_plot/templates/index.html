@@ -1,0 +1,14 @@
+{% extends base %}
+<!-- goes in head -->
+{% block preamble %}
+<link href='/example_static_folder/bokeh_framework_simple_plot/static/css/style.css' rel="stylesheet">
+{% endblock %}
+{% block contents %}
+<div style="height: 50px;"></div>
+<div class="outer-div">
+    <p style="font-size: 28px;"> COSINUS WAVE </p>
+    <div class="inner-div">
+        {{ embed(roots.SimplePlot) }}
+    </div>
+</div>
+{% endblock %}
