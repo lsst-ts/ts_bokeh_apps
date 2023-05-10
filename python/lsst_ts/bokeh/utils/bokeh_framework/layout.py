@@ -7,7 +7,7 @@ from bokeh.io import show
 from lsst_ts.bokeh.utils.bokeh_framework.data_aggregator import DataAggregator, VoidDataAggregator
 from lsst_ts.bokeh.utils.bokeh_framework.interaction import Interaction, VoidInteraction
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from lsst_ts.library.utils.logger import get_logger
 
@@ -54,6 +54,14 @@ class Layout(ABC):
         self._data_aggregator.setup(self)
         return ui_element
 
+    def notebook_show(self, notebook_url: Optional[str] = None):
+        _log.info("Showing application")
+        if notebook_url is not None:
+            assert(notebook_url is not "")
+            show(self.deploy, notebook_url=notebook_url)
+        else:
+            show(self.deploy, notebook_url=Layout.jupyter_hub_url)
+
     def deploy(self, doc: 'Document') -> None:
         """
         Deploy the application into a bokeh document
@@ -63,7 +71,6 @@ class Layout(ABC):
         _log.info("Deploying application")
         element = self.create()
         doc.add_root(element)
-
 
     def show(self, notebook_url: str = "") -> None:
         """
@@ -76,7 +83,7 @@ class Layout(ABC):
         show(element, notebook_url=notebook_url)
 
     @staticmethod
-    def jupyter_hub_url(port: int):
+    def _jupyter_hub_url(port: int):
         """
             Callable to configure Bokeh's show method when a proxy must be
             configured.
