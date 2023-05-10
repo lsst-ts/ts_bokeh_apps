@@ -60,7 +60,7 @@ class Layout(ABC):
             assert(notebook_url != "")
             show(self.deploy, notebook_url=notebook_url)
         else:
-            show(self.deploy, notebook_url=Layout.jupyter_hub_url)
+            show(self.deploy, notebook_url=Layout._jupyter_hub_url)
 
     def deploy(self, doc: 'Document') -> None:
         """
