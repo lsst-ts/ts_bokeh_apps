@@ -57,7 +57,7 @@ class Layout(ABC):
     def notebook_show(self, notebook_url: Optional[str] = None):
         _log.info("Showing application")
         if notebook_url is not None:
-            assert(notebook_url is not "")
+            assert(notebook_url != "")
             show(self.deploy, notebook_url=notebook_url)
         else:
             show(self.deploy, notebook_url=Layout.jupyter_hub_url)
