@@ -48,13 +48,15 @@ class Layout(ABC):
         :return:
         """
         try:
+            _log.info("Setting up Application Data")
+            self._data_aggregator.setup(self)
+            _log.info("Creating Application Layout")
             ui_element = self.define()
             _log.info("Setting up Application Interaction")
             self._interaction.setup(self)
-            _log.info("Setting up Data")
-            self._data_aggregator.setup(self)
-        except Exception:
+        except Exception as ex:
             _log.exception("Exception on Element creation")
+            raise ex
         return ui_element
 
     def show_notebook(self, notebook_url: Optional[str] = None):
