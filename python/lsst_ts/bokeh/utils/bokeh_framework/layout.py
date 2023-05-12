@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Optional
 from lsst_ts.library.utils.logger import get_logger
 
 if TYPE_CHECKING:
-    from bokeh.models import UIElement  # type: ignore
+    from bokeh.models import LayoutDOM
     from bokeh.document import Document
 
 # T = TypeVar('T', bound='DataAggregator')
@@ -31,7 +31,7 @@ class Layout(ABC):
         self._data_aggregator = data_aggregator
 
     @abstractmethod
-    def define(self) -> 'UIElement':
+    def define(self) -> 'LayoutDOM':
         """
         Abstract method. Framework user should inherit from Layout
         and overwrite this method, where basically will
@@ -40,7 +40,7 @@ class Layout(ABC):
         """
         raise NotImplementedError()
 
-    def create(self) -> 'UIElement':
+    def create(self) -> 'LayoutDOM':
         """
         Create the full layout (using the define method overwritten)
          and also create data_aggregation and interaction
@@ -54,7 +54,7 @@ class Layout(ABC):
         self._data_aggregator.setup(self)
         return ui_element
 
-    def notebook_show(self, notebook_url: Optional[str] = None):
+    def show_notebook(self, notebook_url: Optional[str] = None):
         _log.info("Showing application")
         if notebook_url is not None:
             assert(notebook_url != "")
