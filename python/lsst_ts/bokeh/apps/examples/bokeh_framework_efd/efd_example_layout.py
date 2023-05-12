@@ -106,6 +106,7 @@ class EfdExampleLayout(Layout):
             max_length=15,
             sizing_mode="fixed",
         )
+        return self.grid
 
     def _make_plot(self, title, xnames, ynames, lcolors=None, legend=None, start=None):
         if type(xnames) is str and type(ynames) is str:
