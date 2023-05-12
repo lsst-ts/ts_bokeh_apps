@@ -47,11 +47,14 @@ class Layout(ABC):
         to be used inside the Bokeh application
         :return:
         """
-        ui_element = self.define()
-        _log.info("Setting up Application Interaction")
-        self._interaction.setup(self)
-        _log.info("Setting up Data")
-        self._data_aggregator.setup(self)
+        try:
+            ui_element = self.define()
+            _log.info("Setting up Application Interaction")
+            self._interaction.setup(self)
+            _log.info("Setting up Data")
+            self._data_aggregator.setup(self)
+        except Exception:
+            _log.exception("Exception on Element creation")
         return ui_element
 
     def show_notebook(self, notebook_url: Optional[str] = None):

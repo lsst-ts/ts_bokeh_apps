@@ -30,3 +30,13 @@ def initialize_stream_logger() -> None:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(formatter)
     _log.addHandler(handler)
+
+def initialize_file_logger(file: str) -> None:
+    """
+    :param file:
+    :return:
+    """
+    formatter = logging.Formatter(_formatter)
+    handler = logging.FileHandler(file)
+    handler.setFormatter(formatter)
+    _log.addHandler(handler)
