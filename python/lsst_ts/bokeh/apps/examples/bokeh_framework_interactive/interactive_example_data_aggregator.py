@@ -76,6 +76,7 @@ class InteractiveExampleDataAggregator(DataAggregator):
     # It may be empty like in this case.
     def setup(self, layout: 'Layout') -> None:
         # force type layout also for typing purposes
+        # To avoid circular import full module must be imported
         assert (isinstance(layout, interactive_example_layout.InteractiveExampleLayout))
 
     # CPIO Example comment: According to general OOP programming concepts, attributes should be private

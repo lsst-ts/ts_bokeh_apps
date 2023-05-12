@@ -1,36 +1,64 @@
 import asyncio
+import lsst.daf.butler as daf_butler
 import numpy as np
-import lsst.daf.butler as dafButler
 
 from bokeh.models import ColumnDataSource
+from lsst.daf.butler import DimensionRecord
+
 from lsst_efd_client import EfdClient
 
+from lsst_ts.bokeh.apps.examples.bokeh_framework_efd import efd_example_layout
 from lsst_ts.bokeh.utils.bokeh_framework.data_aggregator import DataAggregator
+from lsst_ts.library.utils.logger import get_logger
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from numpy import ndarray, dtype
+    from typing import Union, Sequence, Any, List, Dict, Iterable
+    from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
+
+__all__ = ['EfdExampleDataAggregator']
+
+_log = get_logger("examples.efd.data_aggregator")
+
+
+class ButlerData:
+    configuration: str = "LATISS"
+    instrument: str = "LATISS"
+    collections: str = "LATISS/raw/all"
+
+
+class EdfData:
+    client: str = "usdf_efd"
 
 
 class EfdExampleDataAggregator(DataAggregator):
 
     def __init__(self):
         super().__init__()
-        self.data_sources = None
-        self.day_obs = 20210817
-        self.seq_num = 541
+        self._data_sources = None  # typing: Optional[ColumnDataSource]
+        self._observation_day = 20210817  # typing: int
+        self._sequence_number = 541  # typing: int
 
     def setup(self, layout: 'Layout') -> None:
-        self.initialize_data_sources()
+        assert (isinstance(layout, efd_example_layout.EfdExampleLayout))
+        self._create_data_sources()
+        self._initialize_data_sources()
 
-    def create_data_sources(self):
-        self.butler = dafButler.Butler(
-            "LATISS", instrument="LATISS", collections="LATISS/raw/all"
-        )
-        self.efd = EfdClient("usdf_efd")
+    def _create_data_sources(self):
+        _log.info("Creating data sources")
+        self.butler = daf_butler.Butler(ButlerData.configuration,
+                                        instrument=ButlerData.instrument,
+                                        collections=ButlerData.collections)
+        self.efd = EfdClient(EdfData.client)
 
-    def initialize_data_sources(self, *args, **kwargs):
-        """Initialize data sources."""
-
-        self.create_data_sources()
-
-        self.data_sources["column_data_source"] = ColumnDataSource(
+    def _initialize_data_sources(self):
+        """
+        Initialize data sources.
+        """
+        _log.info("Initializing data sources")
+        self._data_sources = ColumnDataSource(
             data=dict(
                 mount_x=[0.0],
                 mount_azimuth_calculate_angle=[0.0],
@@ -40,42 +68,49 @@ class EfdExampleDataAggregator(DataAggregator):
                 mount_nasmyth2_calculated_angle=[0.0],
                 mount_az_err=[0.0],
                 mount_el_err=[0.0],
+                rotator_x=[0.0],
+                rotator_error=[0.0],
+                rotator_fit=[0.0],
                 torque_x=[0.0],
                 torques_azimuth_motor1_torque=[0.0],
                 torques_azimuth_motor2_torque=[0.0],
                 torques_elevation_motor_torque=[0.0],
-                torques_nasmyth2_motor_torque=[0.0],
-                rotator_x=[0.0],
-                rotator_error=[0.0],
-                rotator_fit=[0.0],
+                torques_nasmyth2_motor_torque=[0.0]
             )
         )
 
-    def retrieve_data(self, *args, **kwargs):
+    def retrieve_data(self) -> None:
         asyncio.run(self._retrieve_data_async())
 
-    async def _retrieve_data_async(self):
-        """"""
+    @property
+    def data_sources(self) -> ColumnDataSource:
+        assert(self._data_sources is not None)
+        return self._data_sources
 
-        t = [r for r in self.butler.registry.queryDimensionRecords("exposure",
-                                                                   where=f"exposure.day_obs = {self.day_obs}\
-                                                                   and exposure.seq_num = {self.seq_num}",
-                                                                   )]
-        if len(t) > 1:
-            raise RuntimeError(
-                f"Something went wrong. We only expected one record for {self.day_obs}-{self.seq_num}"
-            )
-        md = t[0]
+    def _query_observation_data(self) -> DimensionRecord:
+        """
+        :return:
+        """
+        query_condition = f"exposure.day_obs = {self._observation_day} and exposure.seq_num = {self._sequence_number}"
+        values = list(self.butler.registry.queryDimensionRecords("exposure", where=query_condition))
+        assert len(
+            values) <= 1, f"Something went wrong. We only expected one record for {self._observation_day}-{self._sequence_number}"
+        return values[0]
 
-        mountpos = await self.efd.select_packed_time_series("lsst.sal.ATMCS.mount_AzEl_Encoders",
-                                                            ["azimuthCalculatedAngle",
-                                                             "elevationCalculatedAngle"],
+    async def _retrieve_data_async(self) -> None:
+        """
+        """
+        md = self._query_observation_data()
+
+        mount_position = await self.efd.select_packed_time_series("lsst.sal.ATMCS.mount_AzEl_Encoders",
+                                                                  ["azimuthCalculatedAngle",
+                                                                   "elevationCalculatedAngle"],
+                                                                  md.timespan.begin.utc,
+                                                                  md.timespan.end.utc)
+        rotation = await self.efd.select_packed_time_series("lsst.sal.ATMCS.mount_Nasmyth_Encoders",
+                                                            ["nasmyth2CalculatedAngle", ],
                                                             md.timespan.begin.utc,
                                                             md.timespan.end.utc)
-        rot = await self.efd.select_packed_time_series("lsst.sal.ATMCS.mount_Nasmyth_Encoders",
-                                                       ["nasmyth2CalculatedAngle", ],
-                                                       md.timespan.begin.utc,
-                                                       md.timespan.end.utc)
         torques = await self.efd.select_packed_time_series("lsst.sal.ATMCS.measuredTorque",
                                                            ["azimuthMotor1Torque",
                                                             "azimuthMotor2Torque",
@@ -85,33 +120,34 @@ class EfdExampleDataAggregator(DataAggregator):
                                                            md.timespan.begin.utc,
                                                            md.timespan.end.utc)
 
-        afit = np.polyfit(mountpos.times, mountpos["azimuthCalculatedAngle"], 1)
-        efit = np.polyfit(mountpos.times, mountpos["elevationCalculatedAngle"], 1)
-        rfit = np.polyfit(rot.times, rot["nasmyth2CalculatedAngle"], 1)
+        afit = np.polyfit(mount_position.times, mount_position["azimuthCalculatedAngle"], 1)
+        efit = np.polyfit(mount_position.times, mount_position["elevationCalculatedAngle"], 1)
+        rfit = np.polyfit(rotation.times, rotation["nasmyth2CalculatedAngle"], 1)
 
-        mountpos["amodel"] = afit[0] * mountpos.times + afit[1]
-        mountpos["emodel"] = efit[0] * mountpos.times + efit[1]
-        rot["rmodel"] = rfit[0] * rot.times + rfit[1]
+        mount_position["amodel"] = afit[0] * mount_position.times + afit[1]
+        mount_position["emodel"] = efit[0] * mount_position.times + efit[1]
+        rotation["rmodel"] = rfit[0] * rotation.times + rfit[1]
 
-        mountpos["az_err"] = (mountpos["azimuthCalculatedAngle"] - mountpos["amodel"]) * 3600
-        mountpos["el_err"] = (mountpos["elevationCalculatedAngle"] - mountpos["emodel"]) * 3600
-        rot["rot_err"] = (rot["nasmyth2CalculatedAngle"] - rot["rmodel"]) * 3600
+        mount_position["az_err"] = (mount_position["azimuthCalculatedAngle"] - mount_position["amodel"]) * 3600
+        mount_position["el_err"] = (mount_position["elevationCalculatedAngle"] - mount_position["emodel"]) * 3600
+        rotation["rot_err"] = (rotation["nasmyth2CalculatedAngle"] - rotation["rmodel"]) * 3600
 
-        self.data_sources["column_data_source"].data = dict(
-            mount_x=mountpos.index,
-            mount_azimuth_calculate_angle=mountpos["azimuthCalculatedAngle"],
-            mount_elevation_calculated_angle=mountpos["elevationCalculatedAngle"],
-            mount_azimuth_fit=mountpos["amodel"],
-            mount_elevation_fit=mountpos["emodel"],
-            mount_nasmyth2_calculated_angle=rot["rmodel"],
-            mount_az_err=mountpos["az_err"],
-            mount_el_err=mountpos["el_err"],
+        assert(self._data_sources is not None)
+        self._data_sources = dict(
+            mount_x=mount_position.index,
+            mount_azimuth_calculate_angle=mount_position["azimuthCalculatedAngle"],
+            mount_elevation_calculated_angle=mount_position["elevationCalculatedAngle"],
+            mount_azimuth_fit=mount_position["amodel"],
+            mount_elevation_fit=mount_position["emodel"],
+            mount_nasmyth2_calculated_angle=rotation["rmodel"],
+            mount_az_err=mount_position["az_err"],
+            mount_el_err=mount_position["el_err"],
             torque_x=torques.index,
             torques_azimuth_motor1_torque=torques["azimuthMotor1Torque"],
             torques_azimuth_motor2_torque=torques["azimuthMotor2Torque"],
             torques_elevation_motor_torque=torques["elevationMotorTorque"],
             torques_nasmyth2_motor_torque=torques["nasmyth2MotorTorque"],
-            rotator_x=rot.index,
-            rotator_error=rot["rot_err"],
-            rotator_fit=rot["rmodel"],
+            rotator_x=rotation.index,
+            rotator_error=rotation["rot_err"],
+            rotator_fit=rotation["rmodel"]
         )

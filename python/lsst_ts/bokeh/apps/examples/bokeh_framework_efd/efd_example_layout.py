@@ -13,8 +13,10 @@ class EfdExampleLayout(Layout):
         super().__init__(data_aggregator=EfdExampleDataAggregator())
 
     def define(self) -> 'LayoutDOM':
-        mount_start = self.data_aggregator.data_sources["column_data_source"].data["mount_x"][0]
-        torque_start = self.data_aggregator.data_sources["column_data_source"].data["torque_x"][0]
+        efd_data_aggregator = self.data_aggregator
+        assert(isinstance(efd_data_aggregator, EfdExampleDataAggregator))
+        mount_start = efd_data_aggregator.data_sources.data["mount_x"][0]
+        torque_start = efd_data_aggregator.data_sources.data["torque_x"][0]
         s1 = self._make_plot(
             "Azimuth axis",
             "mount_x",
@@ -109,6 +111,8 @@ class EfdExampleLayout(Layout):
         return self.grid
 
     def _make_plot(self, title, xnames, ynames, lcolors=None, legend=None, start=None):
+        efd_data_aggregator = self.data_aggregator
+        assert (isinstance(efd_data_aggregator, EfdExampleDataAggregator))
         if type(xnames) is str and type(ynames) is str:
             xnames = [xnames, ]
             ynames = [ynames, ]
@@ -131,7 +135,7 @@ class EfdExampleLayout(Layout):
                           y=y,
                           line_color=c,
                           line_width=2,
-                          source=self.data_aggregator.data_sources["column_data_source"],
+                          source=efd_data_aggregator.data_sources,
                           legend_label=legend[i],
                           )
             else:
@@ -139,7 +143,7 @@ class EfdExampleLayout(Layout):
                           y=y,
                           line_color=c,
                           line_width=2,
-                          source=self.data_aggregator.data_sources["column_data_source"],
+                          source=efd_data_aggregator.data_sources,
                           )
         if start:
             obs_start = Span(location=start,
