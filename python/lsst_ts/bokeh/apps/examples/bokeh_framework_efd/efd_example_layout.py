@@ -1,6 +1,7 @@
 from bokeh.layouts import gridplot
 from bokeh.models import Span, TextInput, Column
 from bokeh.plotting import figure
+from typing import Optional
 
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_data_aggregator import \
     EfdExampleDataAggregator
@@ -8,8 +9,8 @@ from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from typing import Optional
     from bokeh.models import ColumnDataSource, LayoutDOM
 
 class Plot:
