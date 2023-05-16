@@ -19,33 +19,46 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# CPIO Example comment:  Installed and python default selected component imports. Alphabetical order
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd import efd_example_layout
 from lsst_ts.bokeh.utils.bokeh_framework.interaction import Interaction
+from lsst_ts.library.utils.logger import get_logger
+from typing_extensions import override
 
+# CPIO Example comment: Type checking imports (optional). Alphabetical order
 from typing import TYPE_CHECKING
 
-from lsst_ts.library.utils.logger import get_logger
-
-_log = get_logger("examples.efd.data_aggregator")
-
+# CPIO Example comment: If Variables are only for type checking they may be declared inside this conditional
+# but is optional to have it inside
 if TYPE_CHECKING:
     from typing import Optional
     from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_data_aggregator import \
         EfdExampleDataAggregator
     from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
 
+# CPIO Example comment: User this function get_logger in order to obtain a valid logger that will be integrated
+# inside the application
+_log = get_logger("examples.efd.data_aggregator")
+
+
+# CPIO Example comment: child class that inherits from Interaction, has the responsibility of creating the
+# interaction between the components from the layout and the user
 class EfdExampleInteraction(Interaction):
 
     def __init__(self):
         super().__init__()
         self._data_aggregator = None # Optional[EfdExampleDataAggregator]
 
+    # CPIO Example comment: A decorator is used in order to advise that the method is override  from the
+    # base call. Override decorator really doesn't affect the method execution
+    @override
     def setup(self, layout: 'Layout') -> None:
         assert (isinstance(layout, efd_example_layout.EfdExampleLayout))
         self._data_aggregator = layout.data_aggregator
         text_input = layout.text_input
         text_input.on_change("value", self._handle_text_input)
 
+    # CPIO Example comment: Callback to be executed when handle input text changes
     def _handle_text_input(self, attr, old, new):
         try:
             assert(self._data_aggregator is not None)

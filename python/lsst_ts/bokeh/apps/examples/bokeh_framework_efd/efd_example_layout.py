@@ -1,19 +1,47 @@
+# This file is part of ts_bokeh_apps.
+#
+# Developed for the Vera Rubin Observatory Telescope and Site.
+# This product includes software developed by the LSST Project
+# (https://www.lsst.org).
+# See the COPYRIGHT file at the top-level directory of this distribution
+# for details of code ownership.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# CPIO Example comment:  Installed and python default selected component imports. Alphabetical order
 from bokeh.layouts import gridplot
 from bokeh.models import Span, TextInput, Column, LayoutDOM
 from bokeh.plotting import figure
 from typing import Optional
+from typing_extensions import override
 
+# CPIO Example comment: Own library imports. Alphabetical order
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_data_aggregator import \
     EfdExampleDataAggregator
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_interaction import EfdExampleInteraction
 from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
 
+# CPIO Example comment: Type checking imports (optional). Alphabetical order
 from typing import TYPE_CHECKING
 
-
+# CPIO Example comment: If Variables are only for type checking they may be declared inside this conditional
+# but is optional to have it inside
 if TYPE_CHECKING:
     from bokeh.models import ColumnDataSource
 
+
+# CPIO Example comment: Auxiliar classes for plot creation
 class Plot:
     _WIDTH = 400
     _HEIGHT = 400
@@ -25,6 +53,15 @@ class Plot:
 
     def add_line(self, data_source: 'ColumnDataSource', x_data: str, y_data: str, l_color: str = 'black',
                  legend: str = ""):
+        """
+        Adds a line into the figure plot
+        :param data_source: Column data source
+        :param x_data: string with the id of the x data
+        :param y_data:  string with the id of the y data
+        :param l_color: line color
+        :param legend: string with a legend for the line
+        :return:
+        """
         assert (self._figure is not None)
         self._figure.line(x=x_data,
                           y=y_data,
@@ -35,6 +72,11 @@ class Plot:
                           )
 
     def add_span(self, start):
+        """
+        Add a span into the figure plot #Maybe can be improved being able to set properties of the span
+        :param start:
+        :return:
+        """
         obs_start = Span(location=start,
                          dimension="height",
                          line_color="red",
@@ -45,6 +87,13 @@ class Plot:
 
     @staticmethod
     def create(title: str, x_axis_label: str = "", y_axis_label: str = "") -> 'Plot':
+        """
+        Create the figure plot and returns the instance
+        :param title: Title of the figure
+        :param x_axis_label: x_label value
+        :param y_axis_label: y_label_value
+        :return:
+        """
         _figure = figure(plot_width=Plot._WIDTH,
                          plot_height=Plot._HEIGHT,
                          background_fill_color="#EFEFEF",
@@ -56,12 +105,20 @@ class Plot:
         return Plot(_figure)
 
     def synchronize_x_range(self, plot: 'Plot'):
+        """
+        :param plot:
+        :return:
+        """
         sync_figure = plot.figure
         assert (sync_figure is not None)
         assert (self._figure is not None)
         self._figure.x_range = sync_figure.x_range
 
     def synchronize_y_range(self, plot: 'Plot'):
+        """
+        :param plot:
+        :return:
+        """
         sync_figure = plot.figure
         assert (sync_figure is not None)
         assert (self._figure is not None)
@@ -72,6 +129,8 @@ class Plot:
         return self._figure
 
 
+# CPIO Example comment: child class that inherits from Layout, has the responsibility of creating
+# the application Layout (the view with all its components)
 class EfdExampleLayout(Layout):
     _WIDTH = 400
     _HEIGHT = 400
@@ -92,6 +151,13 @@ class EfdExampleLayout(Layout):
         self._s9 = None # typing: Optional[Plot]
         self._text_input = None # typing: Optional[TextInput]
 
+
+    # CPIO Example comment: A decorator is used in order to advise that the method is override  from the
+    # base call. Override decorator really doesn't affect the method execution
+    @override
+    # CPIO Example comment: Method overriden to create the layout of the application,
+    # Should always return a LayoutDOM, so better puts all component inside a Layout (Row, Column, Grid...)
+    # (check UIElement when upgrading to bokeh 3.0.x)
     def define(self) -> LayoutDOM:
         self._efd_data_aggregator = self.data_aggregator
         assert (isinstance(self._efd_data_aggregator, EfdExampleDataAggregator))
@@ -121,10 +187,14 @@ class EfdExampleLayout(Layout):
 
         return Column(children=[self._text_input, plot_grid])
 
+    # CPIO Example comment: According to general OOP programming concepts, attributes should be private
+    # and be accessible using a getter. In python concretely all attributes are declared a 'private' beginning
+    # with "_" and use @property decorator to create the getter to access the attribute
     @property
     def text_input(self) -> Optional[TextInput]:
         return self._text_input
 
+    # CPIO Example comment: Plot instantiation
     def _create_s1(self):
         s1 = Plot.create("Azimuth axis", y_axis_label="Degrees")
         s1.add_line(self._efd_data_aggregator.data_sources, "mount_x", "mount_azimuth_calculate_angle",
@@ -145,13 +215,13 @@ class EfdExampleLayout(Layout):
         s3.add_line(self._efd_data_aggregator.data_sources, "mount_x", "mount_nasmyth2_calculated_angle",
                     l_color="blue")
         s3.add_span(start=self._mount_start)
-        s3.synchronize_x_range(s3)
+        s3.synchronize_x_range(self._s1)
         return s3
 
     def _create_s4(self):
         s4 = Plot.create("Azimuth RMS error", y_axis_label="Arcseconds")
         s4.add_line(self._efd_data_aggregator.data_sources, "mount_x", "mount_az_err", l_color="red")
-        s4.synchronize_x_range(s4)
+        s4.synchronize_x_range(self._s1)
         return s4
 
     def _create_s5(self):
