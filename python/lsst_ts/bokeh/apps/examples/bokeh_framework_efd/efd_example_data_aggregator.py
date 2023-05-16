@@ -1,4 +1,6 @@
 import asyncio
+import logging
+
 import lsst.daf.butler as daf_butler
 import numpy as np
 
@@ -14,8 +16,6 @@ from lsst_ts.library.utils.logger import get_logger
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from numpy import ndarray, dtype
-    from typing import Union, Sequence, Any, List, Dict, Iterable
     from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
 
 __all__ = ['EfdExampleDataAggregator']
@@ -38,8 +38,6 @@ class EfdExampleDataAggregator(DataAggregator):
     def __init__(self):
         super().__init__()
         self._data_sources = None  # typing: Optional[ColumnDataSource]
-        self._observation_day = 20210817  # typing: int
-        self._sequence_number = 541  # typing: int
 
     def setup(self, layout: 'Layout') -> None:
         assert (isinstance(layout, efd_example_layout.EfdExampleLayout))
@@ -47,7 +45,7 @@ class EfdExampleDataAggregator(DataAggregator):
         self._initialize_data_sources()
 
     def _create_data_sources(self):
-        _log.info("Creating data sources")
+        _log.info("Creating data sources.")
         self.butler = daf_butler.Butler(ButlerData.configuration,
                                         instrument=ButlerData.instrument,
                                         collections=ButlerData.collections)
@@ -57,7 +55,7 @@ class EfdExampleDataAggregator(DataAggregator):
         """
         Initialize data sources.
         """
-        _log.info("Initializing data sources")
+        _log.info("Initializing data sources.")
         self._data_sources = ColumnDataSource(
             data=dict(
                 mount_x=[0.0],
@@ -79,28 +77,39 @@ class EfdExampleDataAggregator(DataAggregator):
             )
         )
 
-    def retrieve_data(self) -> None:
-        asyncio.run(self._retrieve_data_async())
+    def update_observation_information(self, new_observation_day: int, new_sequence_number: int) -> None:
+        """
+        :param new_observation_day:
+        :param new_sequence_number:
+        :return:
+        """
+        asyncio.run(self._retrieve_data_async(new_observation_day, new_sequence_number))
 
     @property
     def data_sources(self) -> ColumnDataSource:
-        assert(self._data_sources is not None)
-        return self._data_sources
-
-    def _query_observation_data(self) -> DimensionRecord:
         """
         :return:
         """
-        query_condition = f"exposure.day_obs = {self._observation_day} and exposure.seq_num = {self._sequence_number}"
+        assert(self._data_sources is not None)
+        return self._data_sources
+
+    def _query_observation_data(self, observation_day, sequence_number) -> DimensionRecord:
+        """
+        :return:
+        """
+        query_condition = f"exposure.day_obs = {observation_day} and exposure.seq_num = {sequence_number}"
         values = list(self.butler.registry.queryDimensionRecords("exposure", where=query_condition))
-        assert len(
-            values) <= 1, f"Something went wrong. We only expected one record for {self._observation_day}-{self._sequence_number}"
+        assert len(values) <= 1, f"Something went wrong. We only expected one record for {observation_day}-{sequence_number}."
         return values[0]
 
-    async def _retrieve_data_async(self) -> None:
+    async def _retrieve_data_async(self, observation_day, sequence_number) -> None:
         """
         """
-        md = self._query_observation_data()
+        try:
+            md  = self._query_observation_data(observation_day, sequence_number)
+        except Exception: #
+            logging.exception("Failed retrieving observation information.")
+            return
 
         mount_position = await self.efd.select_packed_time_series("lsst.sal.ATMCS.mount_AzEl_Encoders",
                                                                   ["azimuthCalculatedAngle",
