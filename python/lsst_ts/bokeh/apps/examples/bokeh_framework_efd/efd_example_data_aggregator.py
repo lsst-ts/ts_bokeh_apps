@@ -105,6 +105,7 @@ class EfdExampleDataAggregator(DataAggregator):
     async def _retrieve_data_async(self, observation_day, sequence_number) -> None:
         """
         """
+        _log.info("Retrieving data")
         try:
             md  = self._query_observation_data(observation_day, sequence_number)
         except Exception: #
@@ -160,3 +161,4 @@ class EfdExampleDataAggregator(DataAggregator):
             rotator_error=rotation["rot_err"],
             rotator_fit=rotation["rmodel"]
         )
+        _log.info("Data refreshed correctly")
