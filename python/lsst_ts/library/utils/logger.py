@@ -40,3 +40,6 @@ def initialize_file_logger(file: str) -> None:
     handler = logging.FileHandler(file)
     handler.setFormatter(formatter)
     _log.addHandler(handler)
+
+def set_log_level(level: int):
+    _log.setLevel(level=level)
