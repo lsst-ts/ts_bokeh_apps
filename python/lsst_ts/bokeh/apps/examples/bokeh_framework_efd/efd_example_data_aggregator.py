@@ -143,7 +143,7 @@ class EfdExampleDataAggregator(DataAggregator):
         rotation["rot_err"] = (rotation["nasmyth2CalculatedAngle"] - rotation["rmodel"]) * 3600
 
         assert(self._data_sources is not None)
-        self._data_sources = dict(
+        self._data_sources.data = dict(
             mount_x=mount_position.index,
             mount_azimuth_calculate_angle=mount_position["azimuthCalculatedAngle"],
             mount_elevation_calculated_angle=mount_position["elevationCalculatedAngle"],
