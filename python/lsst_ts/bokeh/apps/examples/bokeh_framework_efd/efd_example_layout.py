@@ -1,5 +1,5 @@
 from bokeh.layouts import gridplot
-from bokeh.models import Span, TextInput, Column
+from bokeh.models import Span, TextInput, Column, LayoutDOM
 from bokeh.plotting import figure
 from typing import Optional
 
@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from bokeh.models import ColumnDataSource, LayoutDOM
+    from bokeh.models import ColumnDataSource
 
 class Plot:
     _WIDTH = 400
