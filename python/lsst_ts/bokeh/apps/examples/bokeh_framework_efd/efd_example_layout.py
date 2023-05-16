@@ -5,6 +5,7 @@ from typing import Optional
 
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_data_aggregator import \
     EfdExampleDataAggregator
+from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_interaction import EfdExampleInteraction
 from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
 
 from typing import TYPE_CHECKING
@@ -76,7 +77,7 @@ class EfdExampleLayout(Layout):
     _HEIGHT = 400
 
     def __init__(self):
-        super().__init__(data_aggregator=EfdExampleDataAggregator())
+        super().__init__(data_aggregator=EfdExampleDataAggregator(), interaction=EfdExampleInteraction())
         self._torque_start = 0  # typing: int
         self._mount_start = 0  # typing: int
         self._efd_data_aggregator = None  # Optional[EfdExampleDataAggregator]
