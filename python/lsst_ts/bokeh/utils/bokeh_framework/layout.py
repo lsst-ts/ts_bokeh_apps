@@ -15,9 +15,6 @@ if TYPE_CHECKING:
     from bokeh.models import LayoutDOM
     from bokeh.document import Document
 
-# T = TypeVar('T', bound='DataAggregator')
-# I = TypeVar('I', bound=Interaction)
-
 _log = get_logger("bokeh_framework.layout")
 
 class Layout(ABC):
