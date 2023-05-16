@@ -42,6 +42,7 @@ class EfdExampleInteraction(Interaction):
 
     def setup(self, layout: 'Layout') -> None:
         assert (isinstance(layout, efd_example_layout.EfdExampleLayout))
+        self._data_aggregator = layout.data_aggregator
         text_input = layout.text_input
         text_input.on_change("value", self._handle_text_input)
 
