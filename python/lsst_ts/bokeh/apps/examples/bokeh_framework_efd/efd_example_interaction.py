@@ -66,5 +66,5 @@ class EfdExampleInteraction(Interaction):
             sequence_number = int(new[8:])
             _log.debug(f"Processing: {new}.")
             self._data_aggregator.update_observation_information(observation_day, sequence_number)
-        except Exception:
-            _log.exception(f"Error retrieving data for {new}.")
+        except Exception as ex:
+            _log.exception(f"Error retrieving data for {new}: {str(ex)}")

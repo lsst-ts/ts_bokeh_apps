@@ -150,7 +150,7 @@ class EfdExampleDataAggregator(DataAggregator):
         assert len(
             values) <= 1, f"Something went wrong. We only expected one record for observation day: {observation_day} sequence: {sequence_number}."
         assert len(
-            values) == 0, f"No registers available for observation day: {observation_day} sequence: {sequence_number}."
+            values) == 1, f"No registers available for observation day: {observation_day} sequence: {sequence_number}."
         return values[0]
 
     async def _retrieve_data_async(self, observation_day, sequence_number) -> None:

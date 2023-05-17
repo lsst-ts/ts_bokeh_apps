@@ -21,7 +21,7 @@
 
 # CPIO Example comment:  Installed and python default selected component imports. Alphabetical order
 from bokeh.layouts import gridplot
-from bokeh.models import Span, TextInput, Column, LayoutDOM, Row
+from bokeh.models import Span, TextInput, Column, LayoutDOM, Row, Paragraph
 from bokeh.plotting import figure
 from typing import Optional
 from typing_extensions import override
@@ -176,13 +176,13 @@ class EfdExampleLayout(Layout):
         self._s9 = self._create_s9()
 
         error_message = CustomWidgets.create_exception_viewer()
+        label = Paragraph(text="Type exposure id and press enter (e.g. 2021081700541):")
         self._text_input = TextInput(
             value="",
-            title="Type exposure id and press enter (e.g. 2021081700541):",
             max_length=15,
             sizing_mode="fixed",
         )
-        header_utils = Row(self._text_input, error_message)
+        header_utils = Column(children=[label, Row(children=[self._text_input, error_message])])
 
         plot_grid = gridplot(children=[[self._s1.figure, self._s2.figure, self._s3.figure],
                                        [self._s4.figure, self._s5.figure, self._s6.figure],

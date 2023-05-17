@@ -16,11 +16,12 @@ class ErrorViewer(StreamHandler):
     def __init__(self):
         StreamHandler.__init__(self)
         self.setLevel(logging.ERROR)
-        self._label = Paragraph() # typing: Label
+        self._label = Paragraph(text = "NO ERROR") # typing: Label
 
     @property
     def widget(self) -> 'Markup':
         return self._label
 
     def emit(self, record: logging.LogRecord):
+        self._label.style = {'color': 'red'}
         self._label.text = record.message
