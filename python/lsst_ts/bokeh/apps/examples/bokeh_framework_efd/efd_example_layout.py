@@ -31,6 +31,7 @@ from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_data_aggregator
     EfdExampleDataAggregator
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd.efd_example_interaction import EfdExampleInteraction
 from lsst_ts.bokeh.utils.bokeh_framework.layout import Layout
+from lsst_ts.bokeh.utils.bokeh_framework.utils import CustomWidgets
 
 # CPIO Example comment: Type checking imports (optional). Alphabetical order
 from typing import TYPE_CHECKING
@@ -174,7 +175,7 @@ class EfdExampleLayout(Layout):
         self._s8 = self._create_s8()
         self._s9 = self._create_s9()
 
-        error_message = self.create_exception_viewer()
+        error_message = CustomWidgets.create_exception_viewer()
         self._text_input = TextInput(
             value="",
             title="Type exposure id and press enter (e.g. 2021081700541):",
