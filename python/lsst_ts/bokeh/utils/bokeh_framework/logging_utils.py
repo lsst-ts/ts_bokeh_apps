@@ -15,8 +15,13 @@ class ErrorViewer(StreamHandler):
     _FORMATTER = '%(asctime)s %(message)s'
     def __init__(self):
         StreamHandler.__init__(self)
+        self.setFormatter(logging.Formatter(ErrorViewer._FORMATTER))
         self.setLevel(logging.ERROR)
-        self._label = Paragraph(text = "NO ERROR") # typing: Label
+        self._label = Paragraph(text="NO ERROR")
+
+    def reset(self):
+        self._label.style = {'color': 'black'}
+        self._label.text = "NO ERROR" # typing: Label
 
     @property
     def widget(self) -> 'Markup':
@@ -24,4 +29,4 @@ class ErrorViewer(StreamHandler):
 
     def emit(self, record: logging.LogRecord):
         self._label.style = {'color': 'red'}
-        self._label.text = record.message
+        self._label.text = f"Error message: {record.message}"

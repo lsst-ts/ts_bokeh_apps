@@ -22,6 +22,7 @@
 # CPIO Example comment:  Installed and python default selected component imports. Alphabetical order
 from lsst_ts.bokeh.apps.examples.bokeh_framework_efd import efd_example_layout
 from lsst_ts.bokeh.utils.bokeh_framework.interaction import Interaction
+from lsst_ts.bokeh.utils.bokeh_framework.utils import CustomWidgets
 from lsst_ts.library.utils.logger import get_logger
 from typing_extensions import override
 
@@ -62,6 +63,9 @@ class EfdExampleInteraction(Interaction):
     def _handle_text_input(self, attr, old, new):
         try:
             assert(self._data_aggregator is not None)
+            # CPIO Example comment: Reset the custom widgets we are using
+            custom_widgets = CustomWidgets.get_custom_widgets()
+            custom_widgets.reset()
             observation_day = int(new[:8])
             sequence_number = int(new[8:])
             _log.debug(f"Processing: {new}.")

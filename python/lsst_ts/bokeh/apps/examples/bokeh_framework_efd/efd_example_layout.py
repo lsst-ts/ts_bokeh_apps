@@ -151,6 +151,9 @@ class EfdExampleLayout(Layout):
         self._s8 = None # typing: Optional[Plot]
         self._s9 = None # typing: Optional[Plot]
         self._text_input = None # typing: Optional[TextInput]
+        # CPIO Example comment: In CustomWidgets class, the framework offer some builtin widgets that
+        # can be used in the application
+        self._custom_widgets = CustomWidgets.get_custom_widgets()
 
 
     # CPIO Example comment: A decorator is used in order to advise that the method is override  from the
@@ -175,7 +178,9 @@ class EfdExampleLayout(Layout):
         self._s8 = self._create_s8()
         self._s9 = self._create_s9()
 
-        error_message = CustomWidgets.create_exception_viewer()
+        # CPIO Example comment: Get error message viewer from the custom widgets
+        error_message = self._custom_widgets.get_exception_viewer()
+
         label = Paragraph(text="Type exposure id and press enter (e.g. 2021081700541):")
         self._text_input = TextInput(
             value="",
