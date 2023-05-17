@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class CustomWidgets:
 
     @staticmethod
-    def create_exception_viewer() -> Markup:
+    def create_exception_viewer() -> 'Markup':
         error_viewer = ErrorViewer()
         add_custom_handler(error_viewer)
         return error_viewer.widget

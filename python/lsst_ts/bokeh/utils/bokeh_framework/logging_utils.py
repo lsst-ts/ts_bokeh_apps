@@ -19,7 +19,7 @@ class ErrorViewer(StreamHandler):
         self._label = Paragraph() # typing: Label
 
     @property
-    def widget(self) -> Markup:
+    def widget(self) -> 'Markup':
         return self._label
 
     def emit(self, record: logging.LogRecord):
