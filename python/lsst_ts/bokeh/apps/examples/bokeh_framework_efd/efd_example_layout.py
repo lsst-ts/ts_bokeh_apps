@@ -21,7 +21,7 @@
 
 # CPIO Example comment:  Installed and python default selected component imports. Alphabetical order
 from bokeh.layouts import gridplot
-from bokeh.models import Span, TextInput, Column, LayoutDOM
+from bokeh.models import Span, TextInput, Column, LayoutDOM, Row
 from bokeh.plotting import figure
 from typing import Optional
 from typing_extensions import override
@@ -174,18 +174,20 @@ class EfdExampleLayout(Layout):
         self._s8 = self._create_s8()
         self._s9 = self._create_s9()
 
+        error_message = self.create_exception_viewer()
         self._text_input = TextInput(
             value="",
             title="Type exposure id and press enter (e.g. 2021081700541):",
             max_length=15,
             sizing_mode="fixed",
         )
+        header_utils = Row(self._text_input, error_message)
 
         plot_grid = gridplot(children=[[self._s1.figure, self._s2.figure, self._s3.figure],
                                        [self._s4.figure, self._s5.figure, self._s6.figure],
                                        [self._s7.figure, self._s8.figure, self._s9.figure]])
 
-        return Column(children=[self._text_input, plot_grid])
+        return Column(children=[header_utils, plot_grid])
 
     # CPIO Example comment: According to general OOP programming concepts, attributes should be private
     # and be accessible using a getter. In python concretely all attributes are declared a 'private' beginning

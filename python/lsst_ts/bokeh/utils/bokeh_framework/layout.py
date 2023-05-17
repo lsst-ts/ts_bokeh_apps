@@ -9,10 +9,11 @@ from lsst_ts.bokeh.utils.bokeh_framework.interaction import Interaction, VoidInt
 
 from typing import TYPE_CHECKING, Optional
 
-from lsst_ts.library.utils.logger import get_logger
+from lsst_ts.bokeh.utils.bokeh_framework.logging_utils import ErrorViewer
+from lsst_ts.library.utils.logger import get_logger, add_custom_handler
 
 if TYPE_CHECKING:
-    from bokeh.models import LayoutDOM
+    from bokeh.models import LayoutDOM, Markup
     from bokeh.document import Document
 
 _log = get_logger("bokeh_framework.layout")
@@ -103,6 +104,12 @@ class Layout(ABC):
         user_url = urllib.parse.urljoin(base_url, service_url_path)
         full_url = urllib.parse.urljoin(user_url, proxy_url_path)
         return full_url
+
+    @staticmethod
+    def create_exception_viewer() -> Markup:
+        error_viewer = ErrorViewer()
+        add_custom_handler(error_viewer)
+        return error_viewer.widget
 
     def _set_interaction(self, interaction: Interaction) -> None:
         """

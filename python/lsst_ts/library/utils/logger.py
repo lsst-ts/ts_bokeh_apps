@@ -22,7 +22,7 @@ def get_logger(logger: str) -> 'Logger':
     logger_identifier = f"{_log_identifier}.{logger}"
     return logging.getLogger(logger_identifier)
 
-def initialize_stream_logger() -> None:
+def initialize_stdout_logger() -> None:
     """
     :return:
     """
@@ -40,6 +40,10 @@ def initialize_file_logger(file: str) -> None:
     handler = logging.FileHandler(file)
     handler.setFormatter(formatter)
     _log.addHandler(handler)
+
+def add_custom_handler(handler: logging.Handler):
+    _log.addHandler(handler)
+
 
 def set_log_level(level: int):
     _log.setLevel(level=level)
