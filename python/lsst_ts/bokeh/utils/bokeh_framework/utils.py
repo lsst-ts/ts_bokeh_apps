@@ -13,7 +13,7 @@ class CustomWidgets:
     _CUSTOM_WIDGETS = None # typing: Optional[CustomWidgets]
     @staticmethod
     def get_custom_widgets() -> 'CustomWidgets':
-        if CustomWidgets._CUSTOM_WIDGETS is not None:
+        if CustomWidgets._CUSTOM_WIDGETS is None:
             CustomWidgets._CUSTOM_WIDGETS = CustomWidgets()
         return CustomWidgets._CUSTOM_WIDGETS
     def __init__(self):
