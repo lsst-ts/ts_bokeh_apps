@@ -1,0 +1,132 @@
+import os
+from datetime import datetime, timedelta
+from threading import Thread
+
+import pytz
+from bokeh.document import Document
+from bokeh.server.server import Server
+from flask import Flask, jsonify, request
+from jinja2 import Environment, FileSystemLoader
+from lsst.bokeh.apps.log_reader.main import LogViewerApplication
+from lsst.ts.bokeh.main.server_information import ServerInformation
+from lsst.ts.library.controllers.efd_log_controller import EfdLogController
+from lsst.ts.library.data_controller.efd.efd_data_controller import \
+    EFDDataController
+from lsst.ts.library.data_controller.efd.simulated_data_controller import \
+    SimulatedDataController
+from lsst.ts.library.utils.date_interval import DateInterval
+from tornado.ioloop import IOLoop
+from tornado.web import StaticFileHandler
+
+__all__ = ["initialize_app"]
+
+_app_route = "log_messages_app"
+_messages_data_route = "log_messages"
+
+
+def initialize_app(server_information: ServerInformation) -> ServerInformation:
+    efd_controller = SimulatedDataController()
+    # efd_controller =  EFDDataController("usd_efd")
+    efd_log_controller = EfdLogController(efd_controller)
+
+    def create_application(doc: Document) -> None:
+        log_application = LogViewerApplication(doc)
+        template_dir = os.path.normpath(os.path.dirname(__file__))
+        env = Environment(loader=FileSystemLoader(template_dir))
+        index_template = env.get_template("templates/index.html")
+        doc.title = "Log Reader"
+        doc.template_variables[
+            "data_server_host"
+        ] = server_information.get_application_information("flask_server_host")
+        doc.template_variables[
+            "data_server_port"
+        ] = server_information.get_application_information("flask_server_port")
+        log_application.deploy()
+        index_template.render()
+        doc.template = index_template
+
+    server_information.add_application(f"/{_app_route}", create_application)
+
+    @server_information.flask_app.route(f"/{_messages_data_route}", methods=["GET"])  # type: ignore
+    async def log_messages():
+        max_number_of_elements = request.args.get("n")
+        if max_number_of_elements:
+            response = await efd_log_controller.get_logs_last_n(
+                int(max_number_of_elements)
+            )
+            response = [
+                (index,) + tuple(r)
+                for index, r in zip(response.index.to_numpy(), response.to_numpy())
+            ]
+            return jsonify(response)
+
+        begin_date = datetime.today()
+        begin_date_received = request.args.get("begin_date")
+        if begin_date_received:
+            begin_date = datetime.strptime(begin_date_received, "%Y-%m-%d")
+            begin_date = begin_date.replace(hour=12)
+            begin_date = pytz.utc.localize(begin_date)
+        elif request.args.get("begin_datetime"):
+            begin_datetime = request.args.get("begin_datetime")
+            if begin_datetime:
+                begin_date = datetime.strptime(begin_datetime, "%Y-%m-%d %H:%M:%S")
+
+        prev_delta_days = int(request.args.get("prev_delta_days", 0))
+        prev_delta_hours = int(request.args.get("prev_delta_days", 12))
+        prev_delta = timedelta(days=prev_delta_days, hours=prev_delta_hours)
+
+        post_delta_days = int(request.args.get("post_delta_days", 0))
+        post_delta_hours = int(request.args.get("post_delta_days", 12))
+        post_delta = timedelta(days=post_delta_days, hours=post_delta_hours)
+        date_interval = DateInterval.from_central_date(
+            begin_date, prev_delta, post_delta
+        )
+        response = await efd_log_controller.get_logs_by_interval(date_interval)
+        response = [
+            (index,) + tuple(r)
+            for index, r in zip(response.index.to_numpy(), response.to_numpy())
+        ]
+        return jsonify(response)
+
+    return server_information
+
+
+def bk_worker(server_information: ServerInformation) -> None:
+    # Can't pass num_procs > 1 in this configuration.
+    # If you need to run multiple processes,
+    # see e.g. flask_gunicorn_embed.py
+    server = Server(
+        server_information.applications,
+        io_loop=IOLoop(),
+        allow_websocket_origin=server_information.allowed_websocket_origin,
+        extra_patterns=[
+            (
+                r"/(.*)",
+                StaticFileHandler,
+                {
+                    "path": os.path.normpath(
+                        os.path.join(os.path.dirname(__file__), "../")
+                    )
+                },
+            )
+        ],
+    )
+    server.start()
+    server.io_loop.start()
+
+
+if __name__ == "__main__":
+    print(
+        "Opening single process Flask app with embedded Bokeh application on http://localhost:8000/"
+    )
+    print()
+    print("Multiple connections may block the Bokeh app in this configuration!")
+    print('See "flask_gunicorn_embed.py" for one way to run multi-process')
+    server_name = "localhost"
+    port = 5006
+    app = Flask(__name__)
+    information = ServerInformation(app)
+    _efd_controller = EFDDataController("usdf_efd")
+    initialize_app(information)
+    Thread(target=bk_worker, args=[information]).start()
+    app.run(port=8000)
