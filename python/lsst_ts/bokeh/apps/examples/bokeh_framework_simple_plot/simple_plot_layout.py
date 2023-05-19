@@ -38,7 +38,12 @@ class SimplePlotLayout(Layout):
     # Should always return a LayoutDOM, so better puts all component inside a
     # Layout (Row, Column...)
     # (check UIElement when upgrading to bokeh 3.0.x)
-    def define(self) -> "LayoutDOM":
+    def define(self) -> 'LayoutDOM':
+        """
+        Method to create the layout of the application, including
+        all its components
+        :return: Layout of the application
+        """
         self._plot = figure()
         return Row(children=[self._plot], name="SimplePlot")
 
@@ -47,7 +52,11 @@ class SimplePlotLayout(Layout):
     # attributes are declared a 'private' beginning with "_" and use @property
     # decorator to create the getter to access the attribute
     @property
-    def plot(self) -> "figure":
+    def plot(self) -> 'figure':
+        """
+        Getter for plot to use by the interaction class
+        :return: plot from the application
+        """
         # Assert used since type of variable has been defined as optional
         assert self._plot is not None
         return self._plot

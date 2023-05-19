@@ -71,10 +71,15 @@ class InteractiveExampleDataAggregator(DataAggregator):
     # A decorator is used in order to advise that the method is override
     # from the base call. Override decorator really doesn't affect the method
     # execution
+
     @override
     # Method overriden from DataAggregator to set up the plotting data.
     # It may be empty like in this case.
-    def setup(self, layout: "Layout") -> None:
+    def setup(self, layout: 'Layout') -> None:
+        """
+        Setup the data used in the application
+        :param layout: Layout instance
+        """
         # force type layout also for typing purposes
         # To avoid circular import full module must be imported
         assert isinstance(layout, interactive_example_layout.InteractiveExampleLayout)
@@ -85,11 +90,17 @@ class InteractiveExampleDataAggregator(DataAggregator):
     # decorator to create the getter to access the attribute
     @property
     def data_source(self) -> ColumnDataSource:
+        """
+        :return:
+        """
         assert self._data_source is not None
         return self._data_source
 
     @data_source.setter
     def data_source(self, data_source: ColumnDataSource) -> None:
+        """
+        :param data_source:
+        """
         assert self._data_source is not None
         self._data_source = data_source
 
@@ -101,7 +112,6 @@ class InteractiveExampleDataAggregator(DataAggregator):
 
     async def _retrieve_data_async(self) -> None:
         """
-        Testing async methods in apps.
         """
         assert self._data_source is not None
         new_data = (

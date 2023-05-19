@@ -72,6 +72,11 @@ class InteractiveExampleLayout(Layout):
     # Layout (Row, Column...)
     # (check UIElement when upgrading to bokeh 3.0.x)
     def define(self) -> "LayoutDOM":
+        """
+        Method to create the layout of the application, including
+        all its components
+        :return: Layout of the application
+        """
         self._plot = figure(
             border_fill_color="black",
             background_fill_color="black",
@@ -112,25 +117,41 @@ class InteractiveExampleLayout(Layout):
     # attributes are declared a 'private' beginning with "_" and use @property
     # decorator to create the getter to access the attribute
     @property
-    def plot_text(self) -> GlyphRenderer:
+    def plot_text(self) -> 'GlyphRenderer':
+        """
+        Getter for plot_text to use by the interaction class
+        :return: plot_text from the application
+        """
         # Assert used since type of variable has been defined as optional
         assert self._plot_text is not None
         return self._plot_text
 
     @property
-    def button(self) -> "Button":
+    def button(self) -> 'Button':
+        """
+        Getter for plot_text to use by the interaction class
+        :return: button from the application
+        """
         # Assert used since type of variable has been defined as optional
         assert self._button is not None
         return self._button
 
     @property
-    def dropdown(self) -> "Dropdown":
+    def dropdown(self) -> 'Dropdown':
+        """
+        Getter for plot_text to use by the interaction class
+        :return: dropdown from the application
+        """
         # Assert used since type of variable has been defined as optional
         assert self._dropdown is not None
         return self._dropdown
 
     @property
-    def plot(self) -> "figure":
+    def plot(self) -> 'figure':
+        """
+        Getter for plot to use by the interaction class
+        :return: plot from the application
+        """
         # Assert used since type of variable has been defined as optional
         assert self._plot is not None
         return self._plot

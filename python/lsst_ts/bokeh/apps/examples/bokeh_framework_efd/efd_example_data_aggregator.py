@@ -72,8 +72,8 @@ class EfdExampleDataAggregator(DataAggregator):
     # It may be empty.
     def setup(self, layout: "Layout") -> None:
         """
+        Setup the data used in the application
         :param layout: Layout instance
-        :return: None
         """
         # force type layout also for typing purposes
         # To avoid circular import full module must be imported
@@ -86,9 +86,9 @@ class EfdExampleDataAggregator(DataAggregator):
         self, new_observation_day: int, new_sequence_number: int
     ) -> None:
         """
-        :param new_observation_day:
-        :param new_sequence_number:
-        :return:
+        Based on arguments updates information from data sources (async)
+        :param new_observation_day: new observation day
+        :param new_sequence_number: new sequence number
         """
         asyncio.run(self._retrieve_data_async(new_observation_day, new_sequence_number))
 
@@ -100,14 +100,15 @@ class EfdExampleDataAggregator(DataAggregator):
     @property
     def data_sources(self) -> ColumnDataSource:
         """
-        :return:
+        Getter for data sources used in the application
+        :return: data sources
         """
         assert self._data_sources is not None
         return self._data_sources
 
     def _create_data_sources(self) -> None:
         """
-        :return:
+        Auxiliar method to create the data sources feeders
         """
         _log.info("Creating data sources.")
         self.butler = daf_butler.Butler(
@@ -119,7 +120,7 @@ class EfdExampleDataAggregator(DataAggregator):
 
     def _initialize_data_sources(self) -> None:
         """
-        Initialize data sources.
+        Auxiliar method to initialize data sources.
         """
         _log.info("Initializing data sources.")
         self._data_sources = ColumnDataSource(
@@ -144,10 +145,13 @@ class EfdExampleDataAggregator(DataAggregator):
         )
 
     def _query_observation_data(
-        self, observation_day, sequence_number
+        self, observation_day: int, sequence_number: int
     ) -> DimensionRecord:
         """
-        :return:
+        Query new data from the db based on new observation_day and sequence_number arguments
+        :param observation_day: Selected observation day
+        :param sequence_number: Selected sequence number
+        :return: Observation day and sequence number data
         """
         query_condition = (
             f"exposure.day_obs = {observation_day} "
@@ -159,8 +163,7 @@ class EfdExampleDataAggregator(DataAggregator):
             )
         )
         assert len(values) <= 1, (
-            f"Something went wrong. We only expected "
-            f"one record for observation day: "
+            f"Something went wrong. We only expected one record for observation day: "
             f"{observation_day} sequence: {sequence_number}."
         )
         assert len(values) == 1, (
@@ -169,8 +172,14 @@ class EfdExampleDataAggregator(DataAggregator):
         )
         return values[0]
 
-    async def _retrieve_data_async(self, observation_day, sequence_number) -> None:
-        """ """
+    async def _retrieve_data_async(
+        self, observation_day: int, sequence_number: int
+    ) -> None:
+        """
+        Retrieve data and updates data source with the results of the query
+        :param observation_day: Selected observation day
+        :param sequence_number: Selected sequence number
+        """
         _log.info("Retrieving data")
         try:
             md = self._query_observation_data(observation_day, sequence_number)
@@ -184,6 +193,7 @@ class EfdExampleDataAggregator(DataAggregator):
             md.timespan.begin.utc,
             md.timespan.end.utc,
         )
+
         rotation = await self.efd.select_packed_time_series(
             "lsst.sal.ATMCS.mount_Nasmyth_Encoders",
             [
@@ -192,6 +202,7 @@ class EfdExampleDataAggregator(DataAggregator):
             md.timespan.begin.utc,
             md.timespan.end.utc,
         )
+
         torques = await self.efd.select_packed_time_series(
             "lsst.sal.ATMCS.measuredTorque",
             [

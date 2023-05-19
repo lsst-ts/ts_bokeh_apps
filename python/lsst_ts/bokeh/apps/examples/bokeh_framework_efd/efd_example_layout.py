@@ -111,20 +111,20 @@ class Plot:
         _figure.yaxis.axis_label = y_axis_label
         return Plot(_figure)
 
-    def synchronize_x_range(self, plot: "Plot") -> None:
+    def synchronize_x_axe(self, plot: "Plot") -> None:
         """
-        :param plot:
-        :return:
+        synchronizes plot x axes with the plot passed
+        :param plot: plot to be synchronized too
         """
         sync_figure = plot.figure
         assert sync_figure is not None
         assert self._figure is not None
         self._figure.x_range = sync_figure.x_range
 
-    def synchronize_y_range(self, plot: "Plot") -> None:
+    def synchronize_y_axe(self, plot: "Plot") -> None:
         """
-        :param plot:
-        :return:
+        synchronizes plot y axes with the plot passed
+        :param plot: plot to be synchronized too
         """
         sync_figure = plot.figure
         assert sync_figure is not None
@@ -133,6 +133,10 @@ class Plot:
 
     @property
     def figure(self) -> Optional["figure"]:
+        """
+        Getter to return wrapped figure
+        :return: figure wrapped
+        """
         return self._figure
 
 
@@ -173,6 +177,11 @@ class EfdExampleLayout(Layout):
     # Layout (Row, Column, Grid...)
     # (check UIElement when upgrading to bokeh 3.0.x)
     def define(self) -> LayoutDOM:
+        """
+        Method to create the layout of the application, including
+        all its components
+        :return: Layout of the application
+        """
         self._efd_data_aggregator = self.data_aggregator
         assert isinstance(self._efd_data_aggregator, EfdExampleDataAggregator)
         self._mount_start = self._efd_data_aggregator.data_sources.data["mount_x"][0]
@@ -215,12 +224,22 @@ class EfdExampleLayout(Layout):
     # private and be accessible using a getter. In python concretely all
     # attributes are declared a 'private' beginning with "_" and use @property
     # decorator to create the getter to access the attribute
+    # in this case the getter is needed to be able to define its
+    # interaction on the interaction class
     @property
     def text_input(self) -> Optional[TextInput]:
+        """
+        Getter to obtain application text_input
+        :return: text input defined in the application
+        """
         return self._text_input
 
     # Plot instantiation
-    def _create_s1(self):
+    def _create_s1(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S1
+        :return: created plot
+        """
         s1 = Plot.create("Azimuth axis", y_axis_label="Degrees")
         s1.add_line(
             self._efd_data_aggregator.data_sources,
@@ -231,7 +250,11 @@ class EfdExampleLayout(Layout):
         s1.add_span(start=self._mount_start)
         return s1
 
-    def _create_s2(self):
+    def _create_s2(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S2
+        :return: created plot
+        """
         s2 = Plot.create("Elevation axis")
         s2.add_line(
             self._efd_data_aggregator.data_sources,
@@ -240,10 +263,14 @@ class EfdExampleLayout(Layout):
             l_color="green",
         )
         s2.add_span(start=self._mount_start)
-        s2.synchronize_x_range(self._s1)
+        s2.synchronize_x_axe(self._s1)
         return s2
 
-    def _create_s3(self):
+    def _create_s3(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S3
+        :return: created plot
+        """
         s3 = Plot.create("Nasmyth2 axis")
         s3.add_line(
             self._efd_data_aggregator.data_sources,
@@ -252,10 +279,14 @@ class EfdExampleLayout(Layout):
             l_color="blue",
         )
         s3.add_span(start=self._mount_start)
-        s3.synchronize_x_range(self._s1)
+        s3.synchronize_x_axe(self._s1)
         return s3
 
-    def _create_s4(self):
+    def _create_s4(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S4
+        :return: created plot
+        """
         s4 = Plot.create("Azimuth RMS error", y_axis_label="Arcseconds")
         s4.add_line(
             self._efd_data_aggregator.data_sources,
@@ -263,10 +294,14 @@ class EfdExampleLayout(Layout):
             "mount_az_err",
             l_color="red",
         )
-        s4.synchronize_x_range(self._s1)
+        s4.synchronize_x_axe(self._s1)
         return s4
 
-    def _create_s5(self):
+    def _create_s5(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S5
+        :return: created plot
+        """
         s5 = Plot.create("Elevation RMS error")
         s5.add_line(
             self._efd_data_aggregator.data_sources,
@@ -274,11 +309,15 @@ class EfdExampleLayout(Layout):
             "mount_el_err",
             l_color="green",
         )
-        s5.synchronize_x_range(self._s1)
-        s5.synchronize_y_range(self._s4)
+        s5.synchronize_x_axe(self._s1)
+        s5.synchronize_y_axe(self._s4)
         return s5
 
-    def _create_s6(self):
+    def _create_s6(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S6
+        :return: created plot
+        """
         s6 = Plot.create("Nasmyth RMS error")
         s6.add_line(
             self._efd_data_aggregator.data_sources,
@@ -286,11 +325,15 @@ class EfdExampleLayout(Layout):
             "rotator_error",
             l_color="blue",
         )
-        s6.synchronize_x_range(self._s1)
-        s6.synchronize_y_range(self._s4)
+        s6.synchronize_x_axe(self._s1)
+        s6.synchronize_y_axe(self._s4)
         return s6
 
-    def _create_s7(self):
+    def _create_s7(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S7
+        :return: created plot
+        """
         s7 = Plot.create(
             "Nasmyth RMS error",
             x_axis_label="Elapsed Time",
@@ -309,10 +352,14 @@ class EfdExampleLayout(Layout):
             l_color="green",
         )
         s7.add_span(self._torque_start)
-        s7.synchronize_x_range(self._s1)
+        s7.synchronize_x_axe(self._s1)
         return s7
 
-    def _create_s8(self):
+    def _create_s8(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S8
+        :return: created plot
+        """
         s8 = Plot.create("", x_axis_label="Elapsed Time")
         s8.add_line(
             self._efd_data_aggregator.data_sources,
@@ -322,10 +369,14 @@ class EfdExampleLayout(Layout):
             legend="elevationMotorTorque",
         )
         s8.add_span(self._torque_start)
-        s8.synchronize_x_range(self._s1)
+        s8.synchronize_x_axe(self._s1)
         return s8
 
-    def _create_s9(self):
+    def _create_s9(self) -> 'Plot':
+        """
+        Auxiliar function to create plot S9
+        :return: created plot
+        """
         s9 = Plot.create("", x_axis_label="Elapsed Time")
         s9.add_line(
             self._efd_data_aggregator.data_sources,
@@ -335,5 +386,5 @@ class EfdExampleLayout(Layout):
             legend="nasmyth2MotorTorque",
         )
         s9.add_span(self._torque_start)
-        s9.synchronize_x_range(self._s1)
+        s9.synchronize_x_axe(self._s1)
         return s9

@@ -48,6 +48,10 @@ class EfdExampleInteraction(Interaction):
     # method execution
     @override
     def setup(self, layout: "Layout") -> None:
+        """
+        Set up the interaction of the components from the Layout
+        :param layout:
+        """
         assert isinstance(layout, efd_example_layout.EfdExampleLayout)
         self._data_aggregator = layout.data_aggregator
         text_input = layout.text_input
@@ -55,6 +59,13 @@ class EfdExampleInteraction(Interaction):
 
     # Callback to be executed when handle input text changes
     def _handle_text_input(self, attr, old, new):
+        """
+        Callback method that will be called when text input is changed
+        :param attr: attribute name
+        :param old: old attribute value
+        :param new: new attribute value
+        :return:
+        """
         try:
             assert self._data_aggregator is not None
             # Reset the custom widgets we are using

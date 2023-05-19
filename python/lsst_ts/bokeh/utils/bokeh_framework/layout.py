@@ -30,7 +30,7 @@ class Layout(ABC):
         self._data_aggregator = data_aggregator
 
     @abstractmethod
-    def define(self) -> "LayoutDOM":
+    def define(self) -> 'LayoutDOM':
         """
         Abstract method. Framework user should inherit from Layout
         and overwrite this method, where basically will
@@ -39,7 +39,7 @@ class Layout(ABC):
         """
         raise NotImplementedError()
 
-    def create(self) -> "LayoutDOM":
+    def create(self) -> 'LayoutDOM':
         """
         Create the full layout (using the define method overwritten)
          and also create data_aggregation and interaction
@@ -58,7 +58,7 @@ class Layout(ABC):
             raise ex
         return ui_element
 
-    def show_notebook(self, notebook_url: Optional[str] = None):
+    def show_notebook(self, notebook_url: Optional[str] = None) -> None:
         _log.info("Showing application")
         if notebook_url is not None:
             assert notebook_url != ""
@@ -66,7 +66,7 @@ class Layout(ABC):
         else:
             show(self.deploy, notebook_url=Layout._jupyter_hub_url)
 
-    def deploy(self, doc: "Document") -> None:
+    def deploy(self, doc: 'Document') -> None:
         """
         Deploy the application into a bokeh document
         :param doc: Bokeh document where the bokeh application will be deployed
@@ -87,7 +87,7 @@ class Layout(ABC):
         show(element, notebook_url=notebook_url)
 
     @staticmethod
-    def _jupyter_hub_url(port: int):
+    def _jupyter_hub_url(port: int) -> str:
         """
         Callable to configure Bokeh's show method when a proxy must be
         configured.

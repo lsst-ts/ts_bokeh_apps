@@ -49,6 +49,10 @@ class InteractiveExampleInteraction(Interaction):
     # the user and the components of the Layout, both interactions python and
     # javascript It may be empty, if no interaction is needed
     def setup(self, layout: "Layout") -> None:
+        """
+        Set up the interaction of the components from the Layout
+        :param layout:
+        """
         # force type layout also for typing purposes
         assert isinstance(layout, interactive_example_layout.InteractiveExampleLayout)
         data_aggregator = layout.data_aggregator

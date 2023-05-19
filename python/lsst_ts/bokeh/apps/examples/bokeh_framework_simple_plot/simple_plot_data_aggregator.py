@@ -57,6 +57,9 @@ class SimplePlotDataAggregator(DataAggregator):
     # Method overriden from DataAggregator to set up the plotting data.
     # It may be empty.
     def setup(self, layout: "Layout") -> None:
+        """
+        :param layout:
+        """
         # force type layout also for typing purposes
         assert isinstance(layout, simple_plot_layout.SimplePlotLayout)
         x = np.arange(0, 100, 0.01)
