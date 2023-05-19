@@ -1,8 +1,0 @@
-.plot_card {
-    display: flex;
-    justify-content: center;
-    width: 49.8%;
-    background: silver;
-    border: solid black 1px;
-    aspect-ratio: 16/9;
-}
