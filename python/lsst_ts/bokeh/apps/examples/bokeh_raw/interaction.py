@@ -28,8 +28,7 @@ if TYPE_CHECKING:
 
 
 class Interaction:
-
-    def __init__(self, data_aggregator: 'BaseDataAggregator') -> None:
+    def __init__(self, data_aggregator: "BaseDataAggregator") -> None:
         self._data_aggregator = data_aggregator
 
     def setup_interaction(self, layout: Model) -> None:

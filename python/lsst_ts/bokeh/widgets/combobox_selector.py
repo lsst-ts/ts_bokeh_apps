@@ -1,27 +1,31 @@
-from bokeh.io import show
-from bokeh.models import Select, Row  # type: ignore
-
 from typing import TYPE_CHECKING
 
+from bokeh.io import show
+from bokeh.models import Row, Select  # type: ignore
+
 if TYPE_CHECKING:
-    from typing import List, Tuple, Any, TYPE_CHECKING
+    from typing import TYPE_CHECKING, Any, List, Tuple
+
     from bokeh.models.ui.ui_element import UIElement
     from lsst_ts.library.pub_sub.observable import Observable  # noqa: F401
 
 
-class ComboboxSelector('Observable[str]'):
+class ComboboxSelector("Observable[str]"):
     """
     A Combobox to select one in a series of str values.
     """
+
     _FIRST_INDEX_TEXT = "Select a valid SalIndex"
 
-    def __init__(self, name: str = "combobox_selector", options: 'List[Tuple[str]]' = []) -> None:
+    def __init__(
+        self, name: str = "combobox_selector", options: "List[Tuple[str]]" = []
+    ) -> None:
         super().__init__()
         self._dropdown = Select()  # type: Select
         self._name = name
         self._options = options[:]
 
-    def create(self) -> 'UIElement':
+    def create(self) -> "UIElement":
         """
         Create the widget and return it to be placed in the doc
         :return: UIElement
@@ -31,7 +35,7 @@ class ComboboxSelector('Observable[str]'):
         self._set_first_value()
         return Row(children=[self._dropdown], name=self._name)
 
-    def update(self, options: 'List[Tuple[str]]') -> None:
+    def update(self, options: "List[Tuple[str]]") -> None:
         """
         :param options: List of str options to be shown in the combobox
         """
@@ -51,6 +55,8 @@ class ComboboxSelector('Observable[str]'):
         self._notify(new)
 
 
-if __name__ == '__main__':
-    integer_selector = ComboboxSelector(options=[("foo",), ("bar",), ("baz",), ("quux",)])
+if __name__ == "__main__":
+    integer_selector = ComboboxSelector(
+        options=[("foo",), ("bar",), ("baz",), ("quux",)]
+    )
     show(integer_selector.create())

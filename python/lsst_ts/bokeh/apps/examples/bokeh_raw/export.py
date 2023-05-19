@@ -1,5 +1,4 @@
 from bokeh.document import Document
-
 from lsst_ts.bokeh.apps.examples.bokeh_raw.layout import Layout
 from lsst_ts.bokeh.main.server_information import ServerInformation
 
@@ -12,6 +11,7 @@ def initialize_app(server_information: ServerInformation) -> ServerInformation:
             doc.title = "Bokeh raw Example"
         except Exception as ex:
             import traceback
+
             traceback.print_exc()
             print(ex)
 

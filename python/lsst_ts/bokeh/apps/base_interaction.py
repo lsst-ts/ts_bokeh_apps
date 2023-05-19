@@ -26,6 +26,7 @@ import logging
 
 from bokeh.document import Document
 from bokeh.plotting import curdoc
+
 from .base_layout import BaseLayout
 
 

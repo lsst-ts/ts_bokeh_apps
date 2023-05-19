@@ -11,7 +11,9 @@ class DateInterval:
     end: datetime
 
     @staticmethod
-    def from_date(begin_date: Union[date, datetime], end_date: Union[datetime, timedelta]) -> 'DateInterval':
+    def from_date(
+        begin_date: Union[date, datetime], end_date: Union[datetime, timedelta]
+    ) -> "DateInterval":
         """
         Create a Date Interval out of a date
         :param begin_date: begin date for the interval
@@ -19,7 +21,9 @@ class DateInterval:
         :return: a DateInterval instance
         """
         if not isinstance(begin_date, datetime):
-            begin_date = datetime.combine(begin_date, datetime.max.time(), tzinfo=pytz.UTC)
+            begin_date = datetime.combine(
+                begin_date, datetime.max.time(), tzinfo=pytz.UTC
+            )
         if isinstance(end_date, timedelta):
             end_date = begin_date + end_date
         if begin_date > end_date:
@@ -27,8 +31,9 @@ class DateInterval:
         return DateInterval(begin_date, end_date)
 
     @staticmethod
-    def from_central_date(begin_date: datetime, previous_date: timedelta,
-                          post_date: timedelta) -> 'DateInterval':
+    def from_central_date(
+        begin_date: datetime, previous_date: timedelta, post_date: timedelta
+    ) -> "DateInterval":
         """
         :param begin_date:
         :param previous_date:

@@ -2,7 +2,6 @@ import os
 
 from bokeh.document import Document
 from jinja2 import Environment, FileSystemLoader
-
 from lsst_ts.bokeh.apps.examples.bokeh_static.layout import Layout
 from lsst_ts.bokeh.main.server_information import ServerInformation
 
@@ -19,6 +18,7 @@ def initialize_app(server_information: ServerInformation) -> ServerInformation:
             doc.template = index_template
         except Exception as ex:
             import traceback
+
             print(ex)
             traceback.print_exc()
 

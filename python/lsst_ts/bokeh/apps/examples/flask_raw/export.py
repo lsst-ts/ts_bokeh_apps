@@ -20,9 +20,14 @@ def generate_examples_page(bokeh_host: str) -> str:
 
 
 def initialize_app(server_information: ServerInformation) -> ServerInformation:
-    @server_information.flask_app.route('/examples/examples_menu', methods=['GET'])  # type: ignore
+    @server_information.flask_app.route("/examples/examples_menu", methods=["GET"])  # type: ignore
     def examples_menu():
         return generate_examples_page(
-            str(server_information.get_application_information("bokeh_connection_server")))
+            str(
+                server_information.get_application_information(
+                    "bokeh_connection_server"
+                )
+            )
+        )
 
     return server_information

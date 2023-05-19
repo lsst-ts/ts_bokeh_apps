@@ -1,18 +1,16 @@
 import logging
-
 from logging import StreamHandler
+from typing import TYPE_CHECKING
 
 from bokeh.models import Paragraph
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bokeh.models import Markup
 
 
 class ErrorViewer(StreamHandler):
+    _FORMATTER = "%(asctime)s %(message)s"
 
-    _FORMATTER = '%(asctime)s %(message)s'
     def __init__(self):
         StreamHandler.__init__(self)
         self.setFormatter(logging.Formatter(ErrorViewer._FORMATTER))
@@ -20,13 +18,13 @@ class ErrorViewer(StreamHandler):
         self._label = Paragraph(text="NO ERROR")
 
     def reset(self):
-        self._label.style = {'color': 'black'}
-        self._label.text = "NO ERROR" # typing: Label
+        self._label.style = {"color": "black"}
+        self._label.text = "NO ERROR"  # typing: Label
 
     @property
-    def widget(self) -> 'Markup':
+    def widget(self) -> "Markup":
         return self._label
 
     def emit(self, record: logging.LogRecord):
-        self._label.style = {'color': 'red'}
+        self._label.style = {"color": "red"}
         self._label.text = f"Error message: {record.message}"

@@ -1,10 +1,9 @@
+from typing import TYPE_CHECKING
+
 from astropy.time import Time
 from lsst_efd_client import EfdClient
-from pandas import DataFrame
-
 from lsst_ts.library.utils.date_interval import DateInterval
-
-from typing import TYPE_CHECKING
+from pandas import DataFrame
 
 if TYPE_CHECKING:
     from typing import List, cast
@@ -30,22 +29,30 @@ class EFDDataController:
         fields_cast = cast(List[str], fields)
         return fields_cast
 
-    async def select_top_n(self, topic: str, fields: List[str], last_n: int) -> 'DataFrame':
+    async def select_top_n(
+        self, topic: str, fields: List[str], last_n: int
+    ) -> "DataFrame":
         efd = EfdClient(self._efd_client)
         return await efd.select_top_n(topic, fields, last_n)
 
-    async def select_interval(self, topic: str, fields: List[str],
-                              date_interval: DateInterval) -> 'DataFrame':
+    async def select_interval(
+        self, topic: str, fields: List[str], date_interval: DateInterval
+    ) -> "DataFrame":
         efd = EfdClient(self._efd_client)
-        begin_time, end_time = Time([date_interval.begin, date_interval.end], format='datetime', scale='utc')
+        begin_time, end_time = Time(
+            [date_interval.begin, date_interval.end], format="datetime", scale="utc"
+        )
         values = await efd.select_time_series(topic, fields, begin_time, end_time)
         values_cast = cast(DataFrame, values)
         return values_cast
 
-    async def select_packed_interval(self, topic: str, fields: List[str],
-                                     date_interval: DateInterval) -> 'DataFrame':
+    async def select_packed_interval(
+        self, topic: str, fields: List[str], date_interval: DateInterval
+    ) -> "DataFrame":
         efd = EfdClient(self._efd_client)
-        begin_time, end_time = Time([date_interval.begin, date_interval.end], format='datetime', scale='utc')
+        begin_time, end_time = Time(
+            [date_interval.begin, date_interval.end], format="datetime", scale="utc"
+        )
         values = efd.select_packed_time_series(topic, fields, begin_time, end_time)
         values_cast = cast(DataFrame, values)
         return values_cast

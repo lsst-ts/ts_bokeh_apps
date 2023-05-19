@@ -1,11 +1,10 @@
-from typing import Dict, List, Callable, Union
+from typing import Callable, Dict, List, Union
 
 from bokeh.document import Document
 from flask import Flask
 
 
 class ServerInformation:
-
     def __init__(self, flask_app: Flask) -> None:
         """
         :param flask_app: Flask Application to add REST API datapoints
@@ -30,10 +29,14 @@ class ServerInformation:
     def applications(self) -> Dict[str, Callable[[Document], None]]:
         return self._applications
 
-    def add_application(self, name: str, application: Callable[[Document], None]) -> None:
+    def add_application(
+        self, name: str, application: Callable[[Document], None]
+    ) -> None:
         self._applications[name] = application
 
-    def add_application_information(self, identifier: str, value: Union[float, str]) -> None:
+    def add_application_information(
+        self, identifier: str, value: Union[float, str]
+    ) -> None:
         self._server_information[identifier] = value
 
     def get_application_information(self, identifier: str) -> Union[float, str]:

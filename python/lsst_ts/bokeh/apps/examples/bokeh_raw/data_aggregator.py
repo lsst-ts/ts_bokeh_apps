@@ -18,20 +18,21 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+import asyncio
 from itertools import chain
-from typing import Dict, Union, Any, Sequence, List
+from typing import Any, Dict, List, Sequence, Union
 
 import numpy
-import asyncio
-
 from bokeh.models import ColumnDataSource
 from bokeh.palettes import RdYlBu3
 from lsst_ts.bokeh.apps.base_data_aggregator import BaseDataAggregator
-from numpy import ndarray, dtype
+from numpy import dtype, ndarray
 
 
-def concat(a: Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any],
-           b: Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any]) -> List[Any]:
+def concat(
+    a: Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any],
+    b: Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any],
+) -> List[Any]:
     return list(chain(a, b))
 
 
@@ -64,14 +65,24 @@ class DataAggregator(BaseDataAggregator):
         """
         Testing async methods in apps.
         """
-        new_data = dict()  # type: Dict[str, Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any]]
-        new_data["x"] = concat(self._data_sources["column_data_source"].data["x"],
-                                [numpy.random.random() * 70 + 15])
-        new_data["y"] = concat(self._data_sources["column_data_source"].data["y"],
-                                [numpy.random.random() * 70 + 15])
-        new_data["text_color"] = concat(self._data_sources["column_data_source"].data["text_color"],
-                                         [RdYlBu3[self._iterator % 3]])
-        new_data["text"] = concat(self._data_sources["column_data_source"].data["text"], [str(self._iterator)])
+        new_data = (
+            dict()
+        )  # type: Dict[str, Union[Sequence[Any], ndarray[Any, dtype[Any]], Any, Any]]
+        new_data["x"] = concat(
+            self._data_sources["column_data_source"].data["x"],
+            [numpy.random.random() * 70 + 15],
+        )
+        new_data["y"] = concat(
+            self._data_sources["column_data_source"].data["y"],
+            [numpy.random.random() * 70 + 15],
+        )
+        new_data["text_color"] = concat(
+            self._data_sources["column_data_source"].data["text_color"],
+            [RdYlBu3[self._iterator % 3]],
+        )
+        new_data["text"] = concat(
+            self._data_sources["column_data_source"].data["text"], [str(self._iterator)]
+        )
         self._data_sources["column_data_source"].data = new_data
 
         self._iterator += 1

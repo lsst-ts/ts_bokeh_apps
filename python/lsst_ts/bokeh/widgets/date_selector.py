@@ -1,18 +1,18 @@
 from datetime import date, datetime
-from bokeh.models import DatePicker, Row  # type: ignore
-from bokeh.io import show
-from lsst_ts.library.pub_sub.observable import Observable
-
 from typing import TYPE_CHECKING
+
+from bokeh.io import show
+from bokeh.models import DatePicker, Row  # type: ignore
+from lsst_ts.library.pub_sub.observable import Observable
 
 if TYPE_CHECKING:
     from typing import Any, Optional  # noqa: F401
+
     from bokeh.models import UIElement  # type: ignore # noqa: F401
 
 
 class DateSelector(Observable[date]):
-    """
-    """
+    """ """
 
     def __init__(self, name: str = "date_selector") -> None:
         super(DateSelector, self).__init__()
@@ -33,12 +33,12 @@ class DateSelector(Observable[date]):
         self._date_picker.max_date = date.today()
         self._date_picker.on_change("value", self._date_changed)
 
-    def _date_changed(self, attr: 'Any', old_value: 'Any', new_value: 'Any') -> None:
+    def _date_changed(self, attr: "Any", old_value: "Any", new_value: "Any") -> None:
         selected_datetime = datetime.strptime(new_value, "%Y-%m-%d")
         self._notify(selected_datetime.date())
 
 
 # Just to have a first view of the object
-if __name__ == '__main__':
+if __name__ == "__main__":
     date_selector = DateSelector()
     show(date_selector.create())

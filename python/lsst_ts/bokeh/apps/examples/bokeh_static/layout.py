@@ -19,18 +19,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from bokeh.document import Document
-from bokeh.model import Model
-from bokeh.plotting import figure
 from bokeh.layouts import column, row
+from bokeh.model import Model
 from bokeh.models import Button, CustomJS, Dropdown  # type: ignore
-
-from lsst_ts.bokeh.apps.examples.bokeh_raw.data_aggregator import DataAggregator
+from bokeh.plotting import figure
+from lsst_ts.bokeh.apps.examples.bokeh_raw.data_aggregator import \
+    DataAggregator
 from lsst_ts.bokeh.apps.examples.bokeh_raw.interaction import Interaction
 
 
 class Layout:
-    """
-    """
+    """ """
 
     def __init__(self) -> None:
         self._data_aggregator = DataAggregator()
@@ -45,12 +44,14 @@ class Layout:
         """
         :return:
         """
-        p = figure(border_fill_color= "black",
-                   background_fill_color= "black",
-                   outline_line_color= "blue",
-                   toolbar_location=None,
-                   x_range=(0, 100),
-                   y_range=(0, 100))
+        p = figure(
+            border_fill_color="black",
+            background_fill_color="black",
+            outline_line_color="blue",
+            toolbar_location=None,
+            x_range=(0, 100),
+            y_range=(0, 100),
+        )
         p.grid.grid_line_color = None
 
         r = p.text(
@@ -63,7 +64,7 @@ class Layout:
             text_align="center",
         )
 
-        self._data_aggregator.data_sources['column_data_source'] = r.data_source
+        self._data_aggregator.data_sources["column_data_source"] = r.data_source
 
         # add a button widget and configure with the call back
         button = Button(label="Press Me")
@@ -77,4 +78,6 @@ class Layout:
             CustomJS(code="console.log('dropdown: ' + this.item, this.toString())"),
         )
 
-        return column(name="bokeh_component", children=[row(children=[dropdown, button]), p])
+        return column(
+            name="bokeh_component", children=[row(children=[dropdown, button]), p]
+        )

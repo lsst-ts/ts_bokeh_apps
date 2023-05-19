@@ -1,38 +1,37 @@
-import logging
 import os
 import sys
+from threading import Thread
 from typing import Dict
 
 import yaml
-
-from threading import Thread
-
 from bokeh.document import Document
 from bokeh.server.server import Server
 from flask import Flask
 from flask_cors import CORS
 from jinja2 import Environment, FileSystemLoader
-from tornado.ioloop import IOLoop
-from tornado.web import StaticFileHandler
-
-from lsst_ts.bokeh.apps.examples.export import initialize_app as initialize_examples
+from lsst_ts.bokeh.apps.examples.export import \
+    initialize_app as initialize_examples
 # from lsst_ts.bokeh.apps.log_reader.export import initialize_app # noqa: E501 W505
 # from lsst_ts.bokeh.apps.plot_selector_r.export import initialize_app as initialize_react_plot_selector # noqa: E501 W505
 from lsst_ts.bokeh.main.server_information import ServerInformation
-from lsst_ts.library.utils.logger import initialize_stream_logger, get_logger
+from lsst_ts.library.utils.logger import get_logger, initialize_stream_logger
+from tornado.ioloop import IOLoop
+from tornado.web import StaticFileHandler
 
 # from lsst_ts.library.data_controller.efd.efd_data_controller import EFDDataController # noqa: E501 W505
 # from lsst_ts.library.data_controller.efd.simulated_data_controller import SimulatedDataController # noqa: E501 W505
 
 _logger = get_logger("main")
 
+
 def initialize_main_app(server_information: ServerInformation) -> ServerInformation:
     def create_application(doc: Document) -> None:
         template_dir = os.path.normpath(os.path.dirname(__file__))
         env = Environment(loader=FileSystemLoader(template_dir))
         index_template = env.get_template("templates/index.html")
-        doc.template_variables["flask_server_connection"] = server_information.get_application_information(
-            "flask_connection_server")
+        doc.template_variables[
+            "flask_server_connection"
+        ] = server_information.get_application_information("flask_connection_server")
         index_template.render()
         doc.template = index_template
 
@@ -47,16 +46,37 @@ def bk_worker(server_information: ServerInformation) -> None:
     # see e.g. flask_gunicorn_embed.py
     print(server_information.applications)
     print(os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps/examples")))
-    print(f"Starting Server at port: {server_information.get_application_information('bokeh_server_port')}")
-    static_patterns = [(r'/example_static_folder/(.*)', StaticFileHandler, {
-        'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps/examples"))}),
-        (r'/(.*)', StaticFileHandler,
-         {'path': os.path.normpath(os.path.join(os.path.dirname(__file__), "../apps"))})]
+    print(
+        f"Starting Server at port: {server_information.get_application_information('bokeh_server_port')}"
+    )
+    static_patterns = [
+        (
+            r"/example_static_folder/(.*)",
+            StaticFileHandler,
+            {
+                "path": os.path.normpath(
+                    os.path.join(os.path.dirname(__file__), "../apps/examples")
+                )
+            },
+        ),
+        (
+            r"/(.*)",
+            StaticFileHandler,
+            {
+                "path": os.path.normpath(
+                    os.path.join(os.path.dirname(__file__), "../apps")
+                )
+            },
+        ),
+    ]
 
-    server = Server(server_information.applications, io_loop=IOLoop(),
-                    port=server_information.get_application_information("bokeh_server_port"),
-                    allow_websocket_origin=server_information.allowed_websocket_origin,
-                    extra_patterns=static_patterns)
+    server = Server(
+        server_information.applications,
+        io_loop=IOLoop(),
+        port=server_information.get_application_information("bokeh_server_port"),
+        allow_websocket_origin=server_information.allowed_websocket_origin,
+        extra_patterns=static_patterns,
+    )
     server.start()
     server.io_loop.start()
 
@@ -85,23 +105,27 @@ def bk_worker_gnunicorn(flask_information: ServerInformation) -> None:
 #     server.start()
 #     server.io_loop.start()
 
-class Configuration:
 
+class Configuration:
     def __init__(self, conf: Dict[str, str]):
         self._configuration = conf
 
     @staticmethod
-    def from_yaml(config_file: str) -> 'Configuration':
+    def from_yaml(config_file: str) -> "Configuration":
         if not os.path.isfile(config_file):
             raise Exception(f"Configuration file: {config_file} not found")
 
         configuration_values = {}
-        with open(config_file, 'r') as f:
+        with open(config_file, "r") as f:
             conf = yaml.safe_load(f)
-            configuration_values["bokeh_host"] = conf["server"]["bokeh"]["connection_host"]
+            configuration_values["bokeh_host"] = conf["server"]["bokeh"][
+                "connection_host"
+            ]
             configuration_values["bokeh_port"] = conf["server"]["bokeh"]["port"]
-            configuration_values["flask_host"] = conf["server"]["flask"]["connection_host"]
-            configuration_values["flask_port"] = conf["server"]['flask']["port"]
+            configuration_values["flask_host"] = conf["server"]["flask"][
+                "connection_host"
+            ]
+            configuration_values["flask_port"] = conf["server"]["flask"]["port"]
         return Configuration(configuration_values)
 
     def get_bokeh_connection(self) -> str:
@@ -117,7 +141,7 @@ class Configuration:
         return int(self._configuration["flask_port"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     initialize_stream_logger()
     _logger.info("starting ts_apps log")
     configuration_file = sys.argv[1]
@@ -135,8 +159,12 @@ if __name__ == '__main__':
     # only valid localhost or 127.0.0.1 if
     # client will be running in the same computer
     # as the server (very unlikely, but for test purposes is the case)
-    information.add_application_information("flask_connection_server", flask_connection_host)
-    information.add_application_information("bokeh_connection_server", bokeh_connection_host)
+    information.add_application_information(
+        "flask_connection_server", flask_connection_host
+    )
+    information.add_application_information(
+        "bokeh_connection_server", bokeh_connection_host
+    )
     information.add_application_information("bokeh_server_port", bokeh_port)
 
     information.add_allowed_websocket_origin("localhost:5057")
@@ -153,4 +181,4 @@ if __name__ == '__main__':
     Thread(target=bk_worker, args=[information]).start()
 
     # run Flask all hosts
-    flask_app.run(host='0.0.0.0', port=flask_port)
+    flask_app.run(host="0.0.0.0", port=flask_port)

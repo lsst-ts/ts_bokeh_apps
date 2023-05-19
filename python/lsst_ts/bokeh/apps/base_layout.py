@@ -34,8 +34,7 @@ if TYPE_CHECKING:
 class BaseLayout(metaclass=abc.ABCMeta):
     """Base layout class for building bokeh apps."""
 
-    def __init__(self, data_aggregator: 'BaseDataAggregator') -> None:
-
+    def __init__(self, data_aggregator: "BaseDataAggregator") -> None:
         self.log = logging.getLogger(__name__)
 
         self.data_aggregator = data_aggregator

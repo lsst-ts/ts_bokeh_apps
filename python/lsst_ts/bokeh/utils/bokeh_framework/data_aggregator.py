@@ -1,4 +1,3 @@
-import logging
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
@@ -9,13 +8,13 @@ if TYPE_CHECKING:
 
 _log = get_logger("bokeh_framework.data_aggregator")
 
-class DataAggregator(ABC):
 
+class DataAggregator(ABC):
     def __init__(self) -> None:
         super().__init__()
 
     @abstractmethod
-    def setup(self, layout: 'Layout') -> None:
+    def setup(self, layout: "Layout") -> None:
         """
         Abstract method provided to be overwritten by the
         framework user to define data available inside the application
@@ -26,11 +25,10 @@ class DataAggregator(ABC):
 
 
 class VoidDataAggregator(DataAggregator):
-
     def __init__(self) -> None:
         super().__init__()
 
-    def setup(self, layout: 'Layout') -> None:
+    def setup(self, layout: "Layout") -> None:
         """
         :param layout:
         :return:

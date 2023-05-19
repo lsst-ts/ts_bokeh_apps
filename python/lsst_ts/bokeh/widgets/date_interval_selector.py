@@ -1,11 +1,10 @@
 import datetime
+from typing import TYPE_CHECKING
+
 from bokeh.io import show
 from bokeh.models import DatePicker, LayoutDOM, Row  # type: ignore
-
-from lsst_ts.library.utils.date_interval import DateInterval
 from lsst_ts.library.pub_sub.observable import Observable
-
-from typing import TYPE_CHECKING
+from lsst_ts.library.utils.date_interval import DateInterval
 
 if TYPE_CHECKING:
     from typing import Any
@@ -46,16 +45,20 @@ class DateIntervalSelector(Observable[DateInterval]):
         self._end_date.max_date = datetime.date.today()
         self._end_date.on_change("value", self._end_date_changed)
 
-    def _initial_date_changed(self, attr: 'Any', old_value: 'Any', new_value: 'Any') -> None:
+    def _initial_date_changed(
+        self, attr: "Any", old_value: "Any", new_value: "Any"
+    ) -> None:
         if self._end_date.value:
             self._notify(DateInterval(new_value, self._end_date.value))
 
-    def _end_date_changed(self, attr: 'Any', old_value: 'Any', new_value: 'Any') -> None:
+    def _end_date_changed(
+        self, attr: "Any", old_value: "Any", new_value: "Any"
+    ) -> None:
         if self._initial_date.value:
             self._notify(DateInterval(new_value, self._initial_date.value))
 
 
 # Just to have a first view of the object
-if __name__ == '__main__':
+if __name__ == "__main__":
     date_selector = DateIntervalSelector()
     show(date_selector.create())

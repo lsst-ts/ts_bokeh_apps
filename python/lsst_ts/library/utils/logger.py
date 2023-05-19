@@ -1,6 +1,5 @@
 import logging
 import sys
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -12,15 +11,17 @@ _handler = logging.NullHandler()
 _log.addHandler(_handler)
 _log.setLevel(level=logging.INFO)
 
-_formatter = '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
+_formatter = "%(asctime)s %(levelname)-8s %(name)-15s %(message)s"
 
-def get_logger(logger: str) -> 'Logger':
+
+def get_logger(logger: str) -> "Logger":
     """
     :param logger:
     :return:
     """
     logger_identifier = f"{_log_identifier}.{logger}"
     return logging.getLogger(logger_identifier)
+
 
 def initialize_stdout_logger() -> None:
     """
@@ -31,6 +32,7 @@ def initialize_stdout_logger() -> None:
     handler.setFormatter(formatter)
     _log.addHandler(handler)
 
+
 def initialize_file_logger(file: str) -> None:
     """
     :param file:
@@ -40,6 +42,7 @@ def initialize_file_logger(file: str) -> None:
     handler = logging.FileHandler(file)
     handler.setFormatter(formatter)
     _log.addHandler(handler)
+
 
 def add_custom_handler(handler: logging.Handler):
     _log.addHandler(handler)

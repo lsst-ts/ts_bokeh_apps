@@ -1,9 +1,9 @@
 import os
 
 from bokeh.document import Document
-from jinja2 import FileSystemLoader, Environment
-
-from lsst_ts.bokeh.apps.examples.bokeh_framework_simple_plot.simple_plot_layout import SimplePlotLayout
+from jinja2 import Environment, FileSystemLoader
+from lsst_ts.bokeh.apps.examples.bokeh_framework_simple_plot.simple_plot_layout import \
+    SimplePlotLayout
 from lsst_ts.bokeh.main.server_information import ServerInformation
 
 
@@ -19,8 +19,11 @@ def initialize_app(server_information: ServerInformation) -> ServerInformation:
             doc.template = index_template
         except Exception as ex:
             import traceback
+
             traceback.print_exc()
             print(ex)
 
-    server_information.add_application("/examples/bokeh_framework_simple_plot", create_application)
+    server_information.add_application(
+        "/examples/bokeh_framework_simple_plot", create_application
+    )
     return server_information
