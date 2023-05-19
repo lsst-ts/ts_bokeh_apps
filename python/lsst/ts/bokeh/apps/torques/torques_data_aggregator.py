@@ -29,7 +29,7 @@ import numpy as np
 from bokeh.models import ColumnDataSource
 from lsst.daf.butler import DimensionRecord
 from lsst_efd_client import EfdClient
-from lsst.ts.bokeh.apps.torques import efd_example_layout
+from lsst.ts.bokeh.apps.torques import torques_layout
 from lsst.ts.bokeh.utils.bokeh_framework.data_aggregator import DataAggregator
 from lsst.ts.library.utils.logger import get_logger
 from typing_extensions import override
@@ -37,7 +37,7 @@ from typing_extensions import override
 if TYPE_CHECKING:
     from lsst.ts.bokeh.utils import Layout
 
-__all__ = ["EfdExampleDataAggregator"]
+__all__ = ["TorquesDataAggregator"]
 
 # User this function get_logger in order to obtain a valid logger that will
 # be integrated inside the application
@@ -59,7 +59,7 @@ class EdfData:
 
 # Child class that inherits from DataAggregator. has the responsibility of
 # creating and interacting with plotting data
-class EfdExampleDataAggregator(DataAggregator):
+class TorquesDataAggregator(DataAggregator):
     def __init__(self):
         super().__init__()
         self._data_sources = None  # typing: Optional[ColumnDataSource]
@@ -77,7 +77,7 @@ class EfdExampleDataAggregator(DataAggregator):
         """
         # force type layout also for typing purposes
         # To avoid circular import full module must be imported
-        assert isinstance(layout, efd_example_layout.EfdExampleLayout)
+        assert isinstance(layout, torques_layout.TorquesLayout)
         self._create_data_sources()
         self._initialize_data_sources()
 

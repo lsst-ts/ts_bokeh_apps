@@ -22,7 +22,7 @@
 # Type checking imports (optional). Alphabetical order
 from typing import TYPE_CHECKING
 
-from lsst.ts.bokeh.apps.torques import efd_example_layout
+from lsst.ts.bokeh.apps.torques import torques_layout
 from lsst.ts.bokeh.utils.bokeh_framework.interaction import Interaction
 from lsst.ts.bokeh.utils.bokeh_framework.utils import CustomWidgets
 from lsst.ts.library.utils.logger import get_logger
@@ -38,7 +38,7 @@ _log = get_logger("examples.efd.data_aggregator")
 
 # child class that inherits from Interaction, has the responsibility of
 # creating the interaction between the components from the layout and the user
-class EfdExampleInteraction(Interaction):
+class TorquesInteraction(Interaction):
     def __init__(self):
         super().__init__()
         self._data_aggregator = None  # Optional[EfdExampleDataAggregator]
@@ -52,7 +52,7 @@ class EfdExampleInteraction(Interaction):
         Set up the interaction of the components from the Layout
         :param layout:
         """
-        assert isinstance(layout, efd_example_layout.EfdExampleLayout)
+        assert isinstance(layout, torques_layout.TorquesLayout)
         self._data_aggregator = layout.data_aggregator
         text_input = layout.text_input
         text_input.on_change("value", self._handle_text_input)

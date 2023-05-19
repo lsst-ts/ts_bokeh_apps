@@ -19,16 +19,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Type checking imports (optional). Alphabetical order
 from typing import TYPE_CHECKING, Optional
 
 from bokeh.layouts import gridplot
 from bokeh.models import Column, LayoutDOM, Paragraph, Row, Span, TextInput
 from bokeh.plotting import figure
-from lsst.bokeh.apps.torques.efd_example_data_aggregator import \
-    EfdExampleDataAggregator
-from lsst.bokeh.apps.torques.efd_example_interaction import \
-    EfdExampleInteraction
+from lsst.ts.bokeh.apps.torques.torques_data_aggregator import TorquesDataAggregator
+from lsst.ts.bokeh.apps.torques.torques_interaction import TorquesInteraction
 from lsst.ts.bokeh.utils.bokeh_framework.layout import Layout
 from lsst.ts.bokeh.utils.bokeh_framework.utils import CustomWidgets
 from typing_extensions import override
@@ -132,7 +129,7 @@ class Plot:
         self._figure.y_range = sync_figure.y_range
 
     @property
-    def figure(self) -> Optional["figure"]:
+    def figure(self) -> Optional['figure']:
         """
         Getter to return wrapped figure
         :return: figure wrapped
@@ -142,14 +139,14 @@ class Plot:
 
 # child class that inherits from Layout, has the responsibility of creating
 # the application Layout (the view with all its components)
-class EfdExampleLayout(Layout):
+class TorquesLayout(Layout):
     _WIDTH = 400
     _HEIGHT = 400
 
     def __init__(self):
         super().__init__(
-            data_aggregator=EfdExampleDataAggregator(),
-            interaction=EfdExampleInteraction(),
+            data_aggregator=TorquesDataAggregator(),
+            interaction=TorquesInteraction(),
         )
         self._torque_start = 0  # typing: int
         self._mount_start = 0  # typing: int
@@ -183,7 +180,7 @@ class EfdExampleLayout(Layout):
         :return: Layout of the application
         """
         self._efd_data_aggregator = self.data_aggregator
-        assert isinstance(self._efd_data_aggregator, EfdExampleDataAggregator)
+        assert isinstance(self._efd_data_aggregator, TorquesDataAggregator)
         self._mount_start = self._efd_data_aggregator.data_sources.data["mount_x"][0]
         self._torque_start = self._efd_data_aggregator.data_sources.data["torque_x"][0]
 
