@@ -25,7 +25,7 @@ def get_logger(logger: str) -> "Logger":
 
 def initialize_stdout_logger() -> None:
     """
-    :return:
+    Initialize applications logger to use stdout as output
     """
     formatter = logging.Formatter(_formatter)
     handler = logging.StreamHandler(sys.stdout)
@@ -35,8 +35,8 @@ def initialize_stdout_logger() -> None:
 
 def initialize_file_logger(file: str) -> None:
     """
-    :param file:
-    :return:
+    Initialize applications logger to use a file as output
+    :param file: file where log file will be created
     """
     formatter = logging.Formatter(_formatter)
     handler = logging.FileHandler(file)
@@ -44,9 +44,16 @@ def initialize_file_logger(file: str) -> None:
     _log.addHandler(handler)
 
 
-def add_custom_handler(handler: logging.Handler):
+def add_custom_handler(handler: logging.Handler) -> None:
+    """
+    Add a custom handler to applications log system
+    :param handler: Logging Handler to attach to the applications
+    """
     _log.addHandler(handler)
 
 
 def set_log_level(level: int):
+    """
+    Set global logging level. Use values from logging library: logging.INFO, logging.DEBUG...
+    """
     _log.setLevel(level=level)
