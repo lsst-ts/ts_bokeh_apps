@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 
 # User this function get_logger in order to obtain a valid logger that will
 # be integrated inside the application
-_log = get_logger("examples.efd.data_aggregator")
+_log = get_logger("torques_app.efd.data_aggregator")
 
 
 # child class that inherits from Interaction, has the responsibility of

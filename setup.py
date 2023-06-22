@@ -10,7 +10,7 @@ setup(
     name="ts_bokeh_apps",
     description="Bokeh visualization apps.",
     use_scm_version={
-        "write_to": "python/lsst_ts/bokeh/apps/version.py",
+        "write_to": "python/lsst/ts/bokeh/apps/version.py",
         "write_to_template": scm_version_template,
     },
     setup_requires=["setuptools_scm"],

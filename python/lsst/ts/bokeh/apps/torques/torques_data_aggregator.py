@@ -31,6 +31,7 @@ from lsst.daf.butler import DimensionRecord
 from lsst_efd_client import EfdClient
 from lsst.ts.bokeh.apps.torques import torques_layout
 from lsst.ts.bokeh.utils.bokeh_framework.data_aggregator import DataAggregator
+from lsst.ts.library.utils.async_utils import async_function
 from lsst.ts.library.utils.logger import get_logger
 from typing_extensions import override
 
@@ -42,7 +43,7 @@ __all__ = ["TorquesDataAggregator"]
 # User this function get_logger in order to obtain a valid logger that will
 # be integrated inside the application
 
-_log = get_logger("examples.efd.data_aggregator")
+_log = get_logger("torques_app.efd.data_aggregator")
 
 
 # Auxiliar classes to hardcode information, maybe can be inside a configuration
@@ -172,7 +173,8 @@ class TorquesDataAggregator(DataAggregator):
         )
         return values[0]
 
-    async def _retrieve_data_async(
+    @async_function
+    def _retrieve_data_async(
         self, observation_day: int, sequence_number: int
     ) -> None:
         """

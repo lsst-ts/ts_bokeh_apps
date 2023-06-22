@@ -1,6 +1,6 @@
 setuptools~=60.10.0
 packaging~=21.3
-bokeh~=2.4.3
+bokeh~=3.1.1
 jupyter-bokeh
 Flask-Cors
 numpy~=1.23.5

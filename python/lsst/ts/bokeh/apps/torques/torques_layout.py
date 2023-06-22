@@ -97,8 +97,8 @@ class Plot:
         :return:
         """
         _figure = figure(
-            plot_width=Plot._WIDTH,
-            plot_height=Plot._HEIGHT,
+            width=Plot._WIDTH,
+            height=Plot._HEIGHT,
             background_fill_color="#EFEFEF",
             x_axis_type=Plot._X_AXIS_TYPE,
         )
