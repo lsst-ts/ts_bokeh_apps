@@ -174,7 +174,7 @@ class TorquesDataAggregator(DataAggregator):
         return values[0]
 
     @async_function
-    def _retrieve_data_async(
+    async def _retrieve_data_async(
         self, observation_day: int, sequence_number: int
     ) -> None:
         """
