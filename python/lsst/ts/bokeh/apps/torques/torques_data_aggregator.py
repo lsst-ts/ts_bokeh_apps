@@ -90,7 +90,7 @@ class TorquesDataAggregator(DataAggregator):
         :param new_observation_day: new observation day
         :param new_sequence_number: new sequence number
         """
-        self._retrieve_data_async(new_observation_day, new_sequence_number)
+        asyncio.run(self._retrieve_data_async(new_observation_day, new_sequence_number))
 
     # According to general OOP programming concepts, attributes should be
     # private and be accessible using a getter. In python concretely all
