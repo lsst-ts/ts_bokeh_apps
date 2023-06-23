@@ -23,7 +23,7 @@ async def _catcher(_function, *args, **kwargs):
 
 
 def async_function(function):
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:  # 'RuntimeError: There is no current event loop...'
