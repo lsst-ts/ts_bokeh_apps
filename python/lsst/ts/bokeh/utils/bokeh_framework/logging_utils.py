@@ -18,7 +18,7 @@ class ErrorViewer(StreamHandler):
         self._label = Paragraph(text="NO ERROR")
 
     def reset(self):
-        self._label.style = {"color": "black"}
+        self._label.styles = {"color": "black"}
         self._label.text = "NO ERROR"  # typing: Label
 
     @property
@@ -26,5 +26,5 @@ class ErrorViewer(StreamHandler):
         return self._label
 
     def emit(self, record: logging.LogRecord):
-        self._label.style = {"color": "red"}
+        self._label.styles = {"color": "red"}
         self._label.text = f"Error message: {record.message}"

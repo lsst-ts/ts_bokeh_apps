@@ -1,8 +1,17 @@
+# I created this file to try to avoid the:
+# asyncio.run() cannot be called from a running event loop error
+# It works but is better to call:
+# import nest_asyncio
+# nest_asyncio.apply()
+# and all works correctly
+# I leave it in case we use it in the future
+
+
 import asyncio
 
 from lsst.ts.library.utils.logger import get_logger
 
-_log = get_logger("examples.efd.data_aggregator")
+_log = get_logger("ts_apps.utils.async_utils")
 
 
 async def _catcher(_function, *args, **kwargs):

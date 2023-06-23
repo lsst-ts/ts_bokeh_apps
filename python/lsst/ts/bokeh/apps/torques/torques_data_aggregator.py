@@ -31,7 +31,6 @@ from lsst.daf.butler import DimensionRecord
 from lsst_efd_client import EfdClient
 from lsst.ts.bokeh.apps.torques import torques_layout
 from lsst.ts.bokeh.utils.bokeh_framework.data_aggregator import DataAggregator
-from lsst.ts.library.utils.async_utils import async_function
 from lsst.ts.library.utils.logger import get_logger
 from typing_extensions import override
 
@@ -173,7 +172,6 @@ class TorquesDataAggregator(DataAggregator):
         )
         return values[0]
 
-    @async_function
     async def _retrieve_data_async(
         self, observation_day: int, sequence_number: int
     ) -> None:
