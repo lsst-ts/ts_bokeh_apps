@@ -1,0 +1,11 @@
+version: "1.0"
+name: bokeh_apps
+services:
+  lsst_bokeh_apps:
+    build:
+      context: ../../
+      dockerfile: ./ts_bokeh_apps/docker/Dockerfile
+    image: lsst_bokeh_apps
+    ports:
+      - "5056:5056"
+      - "5057:5057"
